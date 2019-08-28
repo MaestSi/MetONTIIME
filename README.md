@@ -1,6 +1,6 @@
 # MetONTIIME
 
-**MetONTIIME** is a Meta-barcoding pipeline for analysing ONT data in QIIME2 framework. The whole bioinformatic workflow consists of a preprocessing pipeline and a script emulating EPI2ME 16S workflow, so to make the whole bioinformatic analysis from raw fast5 files to taxonomy assignments straightforward and simple.
+**MetONTIIME** is a Meta-barcoding pipeline for analysing ONT data in QIIME2 framework. The whole bioinformatic workflow consists of a preprocessing pipeline and a script emulating EPI2ME 16S workflow, Blasting each read against a user-defined database, so to make the whole bioinformatic analysis from raw fast5 files to taxonomy assignments straightforward and simple.
 
 ## Getting started
 
@@ -93,6 +93,10 @@ Note: script run by _Launch_MinION_mobile_lab.sh_.
 **config_MinION_mobile_lab.R**
 
 Note: configuration script, must be modified before running _Launch_MinION_mobile_lab.sh_.
+
+**MetONTIIME.sh**
+
+Note: script run by **MinION_mobile_lab.R** for running Blast analysis in _QIIME2_ framework.
 
 **subsample_fast5.sh**
 
