@@ -55,9 +55,9 @@ MINICONDA_DIR <- "/path/to/miniconda3"
 #basecaller_dir
 BASECALLER_DIR <- "/path/to/ont-guppy-cpu/bin/"
 #NCBI-downloaded sequences (QIIME2 artifact)
-DB <- "/path/to/PRJNA33175_Bacterial_sequence.qza"
+DB <- "/path/to/sample-name_sequence.qza"
 #Taxonomy of NCBI-downloaded sequences (QIIME2 artifact)
-TAXONOMY <- "/path/to/PRJNA33175_taxonomy.qza"
+TAXONOMY <- "/path/to/sample-name_taxonomy.qza"
 #sample-metadata file describing samples metadata; it is created automatically if it doesn't exist
 SAMPLE_METADATA <- "/path/to/sample-metadata.tsv"
 ########################################################################################################
