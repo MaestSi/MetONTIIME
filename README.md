@@ -111,6 +111,6 @@ Note: script run by _MinION_mobile_lab.R_ for removing reads of abnormal length.
 All .qzv and .qza artifacts can be visualized either importing them to [QIIME2 View](https://view.qiime2.org/) or with command:
 
 ```
-source activate MetONTIIIME_env
+source activate MetONTIIME_env
 qiime tools view <file.qz*>
 ```
