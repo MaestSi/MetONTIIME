@@ -71,7 +71,7 @@ Outputs (saved in \<fast5_dir\>_analysis/analysis):
 * species_counts.txt: subset of feature-table_absfreq.tsv file, containing only species names and counts
 * taxa-bar-plots.qzv: _QIIME2_ visualization artifact of barplots with taxonomy abundances
 * demux_summary.qzv: _QIIME2_ visualization artifact with summary of sequences assigned to each sample after demultiplexing
-* feature-table_absfreq.biom, feature-table_relfreq.biom, rep-seqs.qza, rep-seqs.qzv, sequences.qza, table_collapsed.qza, table_collapsed_relfreq.qza, table_collapsed_relfreq.qzv, table.qza, table.qzv, taxonomy.qza, taxonomy.qzv, logfile.txt: temporary files useful for debugging or for further analyses
+* logfile.txt, manifest.txt, sequences.qza, table.qz*, rep-seqs.qz*, taxonomy.qz*, table_collapsed.qza, feature-table_absfreq.biom, table_collapsed_relfreq.qz*, feature-table_relfreq.biom: temporary files useful for debugging or for further analyses
 
 Outputs (saved in \<fast5_dir\>_analysis/qc):
 * Read length distributions and pycoQC report
