@@ -22,6 +22,7 @@ WORKING_DIR=$1
 SAMPLE_METADATA=$2
 DB=$3
 TAXONOMY=$4
+THREADS=$5
 
 FASTQ_FILES=$(realpath $(find $WORKING_DIR | grep "\.fastq\.gz"))
 MANIFEST=$WORKING_DIR"/manifest.txt"
@@ -61,7 +62,7 @@ qiime vsearch cluster-features-de-novo \
 --p-perc-identity 1 \
 --o-clustered-table table.qza \
 --o-clustered-sequences rep-seqs.qza \
---p-threads 24
+--p-threads $THREADS
 
 rm table_tmp.qza rep-seqs_tmp.qza
 
