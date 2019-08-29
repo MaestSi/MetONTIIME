@@ -42,7 +42,7 @@ chmod 755 *
 A conda environment named _MetONTIIME_env_ is created, where seqtk, porechop, pycoQC and qiime2-2019.7 are installed.
 Then, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _PIPELINE_DIR_ and _MINICONDA_DIR_ to the value suggested by the installation step.
 
-# Usage
+## Usage
 
 The first time you run the _MetONTIIME_ pipeline on a new database, you can use the **Import_database.sh** script for importing a fasta file as a pair of _QIIME2_ artifacts. This script downloads some taxonomy files from NCBI (~9.4 GB) and uses [entrez qiime](https://github.com/bakerccm/entrez_qiime) and _QIIME2_ to generate a _DNAFASTAFormat_ and a _HeaderlessTSVTaxonomyFormat_ artifacts, containing sequences and corresponding taxonomy. _Entrez_qiime_ is installed to a new conda environment named _entrez_qiime_env_.
 After this step, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _DB_ and _TAXONOMY_ to the newly generated _QIIME2_ artifacts. After that, you can run the full _MetONTIIME_ pipeline using the wrapper script **Launch_MinION_mobile_lab.sh**. The script **Evaluate_diversity.sh** can be used afterwards to generate a phylogenetic tree and compute some alpha and beta diversity metrics.
@@ -125,7 +125,7 @@ Note: script run by _MinION_mobile_lab.R_ if _do_subsampling_flag_ variable is s
 
 Note: script run by _MinION_mobile_lab.R_ for removing reads of abnormal length.
 
-# Results visualization
+## Results visualization
 
 All .qzv and .qza artifacts can be visualized either importing them to [QIIME2 View](https://view.qiime2.org/) or with command:
 
