@@ -30,7 +30,7 @@ do
       -w)
           working_directory=$(realpath $2)
           shift 2
-          echo "Working directory: $working_dir"
+          echo "Working directory: $working_directory"
           ;;
       -m)
            sample_metadata=$(realpath $2)
