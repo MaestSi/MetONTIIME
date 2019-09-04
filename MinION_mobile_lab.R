@@ -51,7 +51,7 @@ if (!exists("lenfil_tol")) {
   lenfil_tol <- 300
 }
 
-if (!exists("pair_strands_flag") || flowcell == "FLO-MIN106") {
+if (!exists("pair_strands_flag") || flowcell != "FLO-MIN107") {
   pair_strands_flag <- 0
 }
 
@@ -127,10 +127,10 @@ if (!dir.exists(d2)) {
   cat(text = "\n")
   cat(text = paste0("Basecalling is going to be performed by ", basecaller_version), file = logfile, sep = "\n", append = TRUE)
   cat(text = paste0("Basecalling is going to be performed by ", basecaller_version), sep = "\n")
-  if (fast_basecalling_flag == 1 && flowcell == "FLO-MIN106") {
+  if (fast_basecalling_flag == 1 && (flowcell == "FLO-MIN106" || flowcell == "FLO-FLG001")) {
     cat(text = "Basecalling model: fast", file = logfile, sep = "\n", append = TRUE)
     cat(text = "Basecalling model: fast", sep = "\n")
-  } else if (fast_basecalling_flag != 1 && flowcell == "FLO-MIN106") {
+  } else if (fast_basecalling_flag != 1 && (flowcell == "FLO-MIN106" || flowcell == "FLO-FLG001")) {
     cat(text = "Basecalling model: high-accuracy", file = logfile, sep = "\n", append = TRUE)
     cat(text = "Basecalling model: high-accuracy", sep = "\n")
   }
