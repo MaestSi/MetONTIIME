@@ -58,7 +58,7 @@ BASECALLER_DIR <- "/path/to/ont-guppy-cpu/bin/"
 DB <- "/path/to/sample-name_sequence.qza"
 #Taxonomy of NCBI-downloaded sequences (QIIME2 artifact)
 TAXONOMY <- "/path/to/sample-name_taxonomy.qza"
-#sample-metadata file describing samples metadata; it is created automatically if it doesn't exist
+#sample-metadata file describing samples metadata; it is created automatically if it doesn't exist, but the path should exist
 SAMPLE_METADATA <- "/path/to/sample-metadata.tsv"
 ########################################################################################################
 #load BioStrings package
