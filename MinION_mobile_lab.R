@@ -51,8 +51,12 @@ if (!exists("lenfil_tol")) {
   lenfil_tol <- 300
 }
 
-if (!exists("pair_strands_flag") || flowcell != "FLO-MIN107") {
+if (!exists("pair_strands_flag") || flowcell == "FLO-MIN106") {
   pair_strands_flag <- 0
+}
+
+if (!exists("disable_porechop_demu_flag")) {
+  disable_porechop_demu_flag <- 0
 }
 
 if (do_subsampling_flag == 1) {
@@ -127,15 +131,21 @@ if (!dir.exists(d2)) {
   cat(text = "\n")
   cat(text = paste0("Basecalling is going to be performed by ", basecaller_version), file = logfile, sep = "\n", append = TRUE)
   cat(text = paste0("Basecalling is going to be performed by ", basecaller_version), sep = "\n")
-  if (fast_basecalling_flag == 1 && (flowcell == "FLO-MIN106" || flowcell == "FLO-FLG001")) {
+  if (fast_basecalling_flag == 1 && flowcell == "FLO-MIN106") {
     cat(text = "Basecalling model: fast", file = logfile, sep = "\n", append = TRUE)
     cat(text = "Basecalling model: fast", sep = "\n")
-  } else if (fast_basecalling_flag != 1 && (flowcell == "FLO-MIN106" || flowcell == "FLO-FLG001")) {
+  } else if (fast_basecalling_flag != 1 && flowcell == "FLO-MIN106") {
     cat(text = "Basecalling model: high-accuracy", file = logfile, sep = "\n", append = TRUE)
     cat(text = "Basecalling model: high-accuracy", sep = "\n")
   }
   cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling"), file = logfile, sep = ", ", append = TRUE)
   cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling"), sep = ", ")
+  if (disable_porechop_demu_flag == 1) {
+    cat(text = "\n", file = logfile, append = TRUE)
+    cat(text = "\n")
+    cat(text = paste0("The second round of demultiplexing by Porechop is going to be be skipped"), file = logfile, sep = ", ", append = TRUE)
+    cat(text = paste0("The second round of demultiplexing by Porechop is going to be be skipped"), sep = ", ")
+  }
   cat(text = "\n", file = logfile, append = TRUE)
   cat(text = "\n")
 } else {
@@ -217,7 +227,12 @@ for (i in 1:length(demu_files)) {
   if (paste0("BC", BC_val_curr) %in% BC_int) {
     cat(text = paste0("Now trimming adapters with Porechop for sample BC", BC_val_curr), file = logfile, sep = "\n", append = TRUE)
     cat(text = paste0("Now trimming adapters with Porechop for sample BC", BC_val_curr), sep = "\n")
-    system(paste0(PORECHOP, " -i ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq -b ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp --require_two_barcodes --extra_end_trim ", primers_length))
+    if (disable_porechop_demu_flag == 1) {
+      system(paste0("mkdir ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp"))
+      system(paste0(PORECHOP, " -i ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq -o ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp/BC", BC_val_curr, ".fastq  --extra_end_trim ", primers_length))
+    } else {
+      system(paste0(PORECHOP, " -i ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq -b ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp --require_two_barcodes --extra_end_trim ", primers_length))
+    }
     fastq_file_curr <- list.files(path = paste0(d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp"), pattern = paste0("BC", BC_val_curr, "\\.fastq"), full.names = TRUE)
     if (length(fastq_file_curr) == 0) {
       BC_int <- setdiff(BC_int, paste0("BC", BC_val_curr))
