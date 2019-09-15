@@ -65,7 +65,7 @@ Usage: Launch_MinION_mobile_lab.sh \<fast5_dir\>
 Input:
 * \<fast5_dir\>: directory containing raw fast5 files
 
-Outputs (saved in \<fast5_dir\>_analysis/analysis):
+Outputs (saved in \<fast5_dir\>\_analysis/analysis):
 * feature-table_absfreq.tsv: file containing the number of reads assigned to each taxa for each sample
 * feature-table_relfreq.tsv: file containing the proportion of reads assigned to each taxa for each sample
 * species_counts.txt: subset of feature-table_absfreq.tsv file, containing only species names and counts
@@ -73,13 +73,13 @@ Outputs (saved in \<fast5_dir\>_analysis/analysis):
 * demux_summary.qzv: _QIIME2_ visualization artifact with summary of sequences assigned to each sample after demultiplexing
 * logfile.txt, manifest.txt, sequences.qza, table.qz*, rep-seqs.qz*, taxonomy.qz*, table_collapsed.qza, feature-table_absfreq.biom, table_collapsed_relfreq.qz*, feature-table_relfreq.biom: temporary files useful for debugging or for further analyses
 
-Outputs (saved in \<fast5_dir\>_analysis/qc):
+Outputs (saved in \<fast5_dir\>\_analysis/qc):
 * Read length distributions and pycoQC report
 
-Outputs (saved in \<fast5_dir\>_analysis/basecalling):
+Outputs (saved in \<fast5_dir\>\_analysis/basecalling):
 * Temporary files for basecalling
 
-Outputs (saved in \<fast5_dir\>_analysis/preprocessing):
+Outputs (saved in \<fast5_dir\>\_analysis/preprocessing):
 * Temporary files for demultiplexing, filtering based on read length and adapters trimming
 
 **Evaluate_diversity.sh**
@@ -99,7 +99,7 @@ Outputs:
 
 * core-metrics-results\_\<sampling_depth\>\_subsampled: folder containing some alpha and beta diversity metrics
 * alpha-rarefaction\_\<sampling_depth\>\_subsampled.qzv: visualization artifact describing alpha diversity as a function of sampling depth
-* aligned-repseqs\_\<sampling_depth\>\_subsampled.qza, rooted-tree\_\<sampling_depth\>\_subsampled.qza and unrooted-tree\_\<sampling_depth\>\_subsampled.qza: temporary files generated for calculating diversity metrics
+* \<sample_name\>\_\<sampling_depth\>\_subsampled.fastq.gz, manifest\_\<sampling_depth\>\_subsampled.txt, aligned-repseqs\_\<sampling_depth\>\_subsampled.qza, masked-aligned-rep-seqs\_\<sampling_depth\>\_subsampled.qza, rooted-tree\_\<sampling_depth\>\_subsampled.qza, unrooted-tree\_\<sampling_depth\>\_subsampled.qza: temporary files generated for calculating diversity metrics
 
 ## Auxiliary scripts
 
