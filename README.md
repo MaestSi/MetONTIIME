@@ -99,7 +99,7 @@ Outputs:
 
 * core-metrics-results\_\<sampling_depth\>\_subsampled: folder containing some alpha and beta diversity metrics
 * alpha-rarefaction\_\<sampling_depth\>\_subsampled.qzv: visualization artifact describing alpha diversity as a function of sampling depth
-* \<sample_name\>\_\<sampling_depth\>\_subsampled.fastq.gz, manifest\_\<sampling_depth\>\_subsampled.txt, aligned-repseqs\_\<sampling_depth\>\_subsampled.qza, masked-aligned-rep-seqs\_\<sampling_depth\>\_subsampled.qza, rooted-tree\_\<sampling_depth\>\_subsampled.qza, unrooted-tree\_\<sampling_depth\>\_subsampled.qza: temporary files generated for calculating diversity metrics
+* \<"sample_name"\>\_\<sampling_depth\>\_subsampled.fastq.gz, manifest\_\<sampling_depth\>\_subsampled.txt, aligned-repseqs\_\<sampling_depth\>\_subsampled.qza, masked-aligned-rep-seqs\_\<sampling_depth\>\_subsampled.qza, rooted-tree\_\<sampling_depth\>\_subsampled.qza, unrooted-tree\_\<sampling_depth\>\_subsampled.qza: temporary files generated for calculating diversity metrics
 
 ## Auxiliary scripts
 
