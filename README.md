@@ -28,7 +28,7 @@ tar -xf ont-guppy-cpu_version_of_interest.tar.gz
 A directory _ont-guppy-cpu_ should have been created in your current directory.
 Then, after completing _MetONTIIME_ installation, set the _BASECALLER_DIR_ variable in **config_MinION_mobile_lab.R** to the full path to _ont-guppy-cpu/bin_ directory.
 
-* A fasta file downloaded from NCBI that you want to use as a reference database. For example, if you want to use the same database used by the EPI2ME 16S workflow for bacterial 16S gene, you can go to [BioProject 33175](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D), click _send to_ and select _Complete Record_ and _File_.
+* A fasta file downloaded from NCBI that you want to use as a reference database. For example, if you want to use the same database used by the EPI2ME 16S workflow for bacterial 16S gene, you can go to [BioProject 33175](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D), click _send to_, select _Complete Record_ and _File_, set the _Format_ to _FASTA_ and then click _Create File_.
 
 **Installation**
 
