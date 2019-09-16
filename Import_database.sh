@@ -26,23 +26,15 @@ pip install cogent
 
 if [ ! -d "taxonomy" ]; then
   mkdir taxonomy
-fi
-
-cd taxonomy
-
-wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
-gunzip nucl_gb.accession2taxid.gz
-
-if [ ! -d "taxdump" ]; then
+  cd taxonomy
+  wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
+  gunzip nucl_gb.accession2taxid.gz
   mkdir taxdump
+  cd taxdump
+  wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
+  tar -zxvf taxdump.tar.gz
+  cd ../..
 fi
-
-cd taxdump
-
-wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
-tar -zxvf taxdump.tar.gz
-
-cd ../..
 
 sed -i '/^[[:space:]]*$/d' $DB_FASTA
 
