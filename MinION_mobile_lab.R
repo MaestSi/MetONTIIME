@@ -184,7 +184,7 @@ cat(text = "\n")
 
 cat(text = paste0("Demultiplexing started at ", date()), file = logfile, sep = "\n", append = TRUE)
 cat(text = paste0("Demultiplexing started at ", date()), sep = "\n")
-system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\"", " --kit ", kit))
+system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
 cat(text = paste0("Demultiplexing finished at ", date()), file = logfile, sep = "\n", append = TRUE)
 cat(text = paste0("Demultiplexing finished at ", date()), sep = "\n")
 cat(text = "\n", file = logfile, append = TRUE)
@@ -259,6 +259,15 @@ for (i in 1:length(demu_files)) {
     cat(text = paste0("Now filtering out reads shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), sep = "\n")
     system(paste0("cat ", d2_preprocessing, "/BC", BC_val_curr, "_tmp2.fastq | ", remove_long_short, " ", lb, " ", ub, " > ", d3, "/BC", BC_val_curr, ".fastq"))
     system(paste0(SEQTK, " seq -A ", d3, "/BC", BC_val_curr, ".fastq > ", d3, "/BC", BC_val_curr, ".fasta"))
+    if (length(grep(x = readLines(paste0( d3, "/BC", BC_val_curr, ".fasta")), pattern = "^>")) < 2) {
+      cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length filtering!"), file = logfile, sep = "\n", append = TRUE)
+      cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length filtering!"), sep = "\n")
+      cat(text = "\n", file = logfile, append = TRUE)
+      cat(text = "\n")
+      system(paste0("rm ", d3, "/BC", BC_val_curr, ".fastq"))
+      system(paste0("rm ", d3, "/BC", BC_val_curr, ".fasta"))
+      next
+    }
     cat(text = paste0("Mean read length for sample BC", BC_val_curr, " after filtering: ", sprintf("%.0f", mean(ws_ok)), " (", sprintf("%.0f", sd(ws_ok)), ")"), file = logfile, sep = "\n", append = TRUE)
     cat(text = paste0("Mean read length for sample BC", BC_val_curr, " after filtering: ", sprintf("%.0f", mean(ws_ok)), " (", sprintf("%.0f", sd(ws_ok)), ")"), sep = "\n")
     png(paste0(d2, "/qc/hist_BC", BC_val_curr, "_unfiltered.png"))
