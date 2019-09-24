@@ -59,6 +59,10 @@ if (!exists("disable_porechop_demu_flag")) {
   disable_porechop_demu_flag <- 0
 }
 
+if (!exists("min_qual")) {
+  min_qual <- 7
+}
+
 if (do_subsampling_flag == 1) {
     #d2 is the directory which is going to include processed reads
     d2 <- paste0(dirname(d1_tmp), "/", basename(d1_tmp), "_", num_fast5_files, "_subsampled_fast5_files_analysis")
@@ -255,13 +259,13 @@ for (i in 1:length(demu_files)) {
     }
     ws_ok <- ws[intersect(which(ws > lb), which(ws < ub))]
     read_length_ok <- ws_ok
-    cat(text = paste0("Now filtering out reads shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), file = logfile, sep = "\n", append = TRUE)
-    cat(text = paste0("Now filtering out reads shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), sep = "\n")
-    system(paste0("cat ", d2_preprocessing, "/BC", BC_val_curr, "_tmp2.fastq | ", remove_long_short, " ", lb, " ", ub, " > ", d3, "/BC", BC_val_curr, ".fastq"))
+    cat(text = paste0("Now filtering out reads with quality lower than ", min_qual, ", shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), file = logfile, sep = "\n", append = TRUE)
+    cat(text = paste0("Now filtering out reads with quality lower than ", min_qual, ", shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), sep = "\n")
+    system(paste0("cat ", d2_preprocessing, "/BC", BC_val_curr, "_tmp2.fastq | ", NANOFILT, " --length ", lb, " --maxlength ", ub, " -q ", min_qual, " > ", d3, "/BC", BC_val_curr, ".fastq"))
     system(paste0(SEQTK, " seq -A ", d3, "/BC", BC_val_curr, ".fastq > ", d3, "/BC", BC_val_curr, ".fasta"))
-    if (length(grep(x = readLines(paste0( d3, "/BC", BC_val_curr, ".fasta")), pattern = "^>")) < 2) {
-      cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length filtering!"), file = logfile, sep = "\n", append = TRUE)
-      cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length filtering!"), sep = "\n")
+    if (length(grep(x = readLines(paste0( d3, "/BC", BC_val_curr, ".fasta")), pattern = "^>")) < 1) {
+      cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length or quality filtering!"), file = logfile, sep = "\n", append = TRUE)
+      cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length or quality filtering!"), sep = "\n")
       cat(text = "\n", file = logfile, append = TRUE)
       cat(text = "\n")
       system(paste0("rm ", d3, "/BC", BC_val_curr, ".fastq"))
