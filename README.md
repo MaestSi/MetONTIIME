@@ -39,7 +39,7 @@ chmod 755 *
 ./install.sh
 ```
 
-A conda environment named _MetONTIIME_env_ is created, where seqtk, porechop, pycoQC and qiime2-2019.7 are installed.
+A conda environment named _MetONTIIME_env_ is created, where seqtk, porechop, pycoQC, NanoFilt and qiime2-2019.7 are installed.
 Then, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _PIPELINE_DIR_ and _MINICONDA_DIR_ to the value suggested by the installation step.
 
 ## Usage
@@ -120,10 +120,6 @@ Note: script run by **MinION_mobile_lab.R** for running Blast analysis in _QIIME
 **subsample_fast5.sh**
 
 Note: script run by _MinION_mobile_lab.R_ if _do_subsampling_flag_ variable is set to 1 in _config_MinION_mobile_lab.R_.
-
-**remove_long_short.pl**
-
-Note: script run by _MinION_mobile_lab.R_ for removing reads of abnormal length.
 
 ## Results visualization
 
