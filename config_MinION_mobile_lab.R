@@ -50,6 +50,8 @@ lenfil_tol <- 300
 primers_length <- 25
 #if disable_porechop_demu_flag <- 1 porechop is only used for adapters trimming and not for doing a second round of demultiplexing; otherwise set disable_porechop_demu_flag <- 0
 disable_porechop_demu_flag <- 0
+#min read quality value
+min_qual <- 7
 ########################################################################################################
 PIPELINE_DIR <- "/path/to/MetONTIIME"
 #MINICONDA DIR
@@ -67,8 +69,6 @@ SAMPLE_METADATA <- "/path/to/sample-metadata.tsv"
 suppressMessages(library(Biostrings))
 #path to MetONTIIME.sh
 MetONTIIME <- paste0(PIPELINE_DIR, "/MetONTIIME.sh")
-#path to remove_long_short.pl
-remove_long_short <- paste0(PIPELINE_DIR, "/remove_long_short.pl")
 #path to subsample fast5
 subsample_fast5 <- paste0(PIPELINE_DIR, "/subsample_fast5.sh")
 #########################################################################################################
@@ -78,3 +78,5 @@ SEQTK <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/seqtk")
 PORECHOP <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/porechop")
 #PYCOQC
 PYCOQC <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/pycoQC")
+#NANOFILT
+NANOFILT <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/NanoFilt")
