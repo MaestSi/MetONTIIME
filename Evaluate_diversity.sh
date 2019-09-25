@@ -65,7 +65,7 @@ done
 
 source activate MetONTIIME_env
 
-FASTQ_FILES=$(realpath $(find $WORKING_DIRECTORY | grep "\.fastq\.gz" | grep -v "subsampled"))
+FASTQ_FILES=$(realpath $(find $WORKING_DIRECTORY | grep "\.fastq\.gz" | grep -v "subsampled\.fastq\.gz"))
 
 MANIFEST_SUB=$WORKING_DIRECTORY"/manifest_"$SAMPLING_DEPTH"_subsampled.txt"
 
