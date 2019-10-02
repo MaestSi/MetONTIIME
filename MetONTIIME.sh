@@ -98,6 +98,18 @@ qiime taxa barplot \
   --m-metadata-file $SAMPLE_METADATA \
   --o-visualization taxa-bar-plots.qzv
 
+qiime taxa filter-table \
+  --i-table table.qza \
+  --i-taxonomy taxonomy.qza \
+  --p-exclude Unassigned \
+  --o-filtered-table table-no-unassigned.qza
+ 
+qiime taxa barplot \
+  --i-table table-no-unassigned.qza \
+  --i-taxonomy taxonomy.qza   \
+  --m-metadata-file $SAMPLE_METADATA \
+  --o-visualization taxa-bar-plots-no-unassigned.qzv
+
 qiime taxa collapse \
 --i-table table.qza --i-taxonomy taxonomy.qza \
 --p-level 6 \
