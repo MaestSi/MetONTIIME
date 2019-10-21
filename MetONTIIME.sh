@@ -23,6 +23,7 @@ SAMPLE_METADATA=$2
 DB=$3
 TAXONOMY=$4
 THREADS=$5
+CLASSIFIER=$6
 
 FASTQ_FILES=$(realpath $(find $WORKING_DIR | grep "\.fastq\.gz"))
 MANIFEST=$WORKING_DIR"/manifest.txt"
@@ -79,14 +80,42 @@ qiime feature-table tabulate-seqs \
   --i-data rep-seqs.qza \
   --o-visualization rep-seqs.qzv
 
-qiime feature-classifier classify-consensus-blast \
---i-query rep-seqs.qza  \
---i-reference-reads $DB \
---i-reference-taxonomy $TAXONOMY \
---p-perc-identity 0.77 \
---p-query-cov 0.3 \
---p-maxaccepts 1 \
---o-classification taxonomy.qza
+CLASSIFIER_UC=$(awk '{print toupper($0)'} <<< $CLASSIFIER)
+
+if [ "$CLASSIFIER_UC" == "BLAST" ]; then
+  qiime feature-classifier classify-consensus-blast \
+  --i-query rep-seqs.qza  \
+  --i-reference-reads $DB \
+  --i-reference-taxonomy $TAXONOMY \
+  --p-perc-identity 0.77 \
+  --p-query-cov 0.3 \
+  --p-maxaccepts 1 \
+  --o-classification taxonomy.qza
+elif [ "$CLASSIFIER_UC" == "VSEARCH" ]; then
+  qiime feature-classifier classify-consensus-vsearch \
+    --i-query rep-seqs.qza  \
+    --i-reference-reads $DB \
+    --i-reference-taxonomy $TAXONOMY \
+    --p-perc-identity 0.77 \
+    --p-query-cov 0.3 \
+    --p-top-hits-only \
+    --p-maxaccepts 1 \
+    --p-strand 'both' \
+    --p-unassignable-label 'Unassigned' \
+    --p-threads $THREADS \
+    --o-classification taxonomy.qza
+else
+  echo "Classifier $CLASSIFIER is not supported (choose between Blast and Vsearch); running default classifier Blast"
+  qiime feature-classifier classify-consensus-blast \
+  --i-query rep-seqs.qza  \
+  --i-reference-reads $DB \
+  --i-reference-taxonomy $TAXONOMY \
+  --p-perc-identity 0.77 \
+  --p-query-cov 0.3 \
+  --p-maxaccepts 1 \
+  --o-classification taxonomy.qza
+fi
+
 
 qiime metadata tabulate \
   --m-input-file taxonomy.qza \
@@ -97,18 +126,6 @@ qiime taxa barplot \
   --i-taxonomy taxonomy.qza \
   --m-metadata-file $SAMPLE_METADATA \
   --o-visualization taxa-bar-plots.qzv
-
-qiime taxa filter-table \
-  --i-table table.qza \
-  --i-taxonomy taxonomy.qza \
-  --p-exclude Unassigned \
-  --o-filtered-table table-no-unassigned.qza
- 
-qiime taxa barplot \
-  --i-table table-no-unassigned.qza \
-  --i-taxonomy taxonomy.qza   \
-  --m-metadata-file $SAMPLE_METADATA \
-  --o-visualization taxa-bar-plots-no-unassigned.qzv
 
 qiime taxa collapse \
 --i-table table.qza --i-taxonomy taxonomy.qza \

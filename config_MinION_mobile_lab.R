@@ -49,9 +49,11 @@ lenfil_tol <- 300
 #set primers length [bp]
 primers_length <- 25
 #if disable_porechop_demu_flag <- 1 porechop is only used for adapters trimming and not for doing a second round of demultiplexing; otherwise set disable_porechop_demu_flag <- 0
-disable_porechop_demu_flag <- 0
+disable_porechop_demu_flag <- 1
 #min read quality value
 min_qual <- 7
+#Choose taxonomic classifier between Blast and Vsearch; similar results are expected, but Vsearch is multi-threaded
+CLASSIFIER <- "Blast"
 ########################################################################################################
 PIPELINE_DIR <- "/path/to/MetONTIIME"
 #MINICONDA DIR
@@ -62,7 +64,7 @@ BASECALLER_DIR <- "/path/to/ont-guppy-cpu/bin/"
 DB <- "/path/to/PRJNA33175_Bacterial_sequences.qza"
 #Taxonomy of NCBI-downloaded sequences (QIIME2 artifact)
 TAXONOMY <- "/path/to/PRJNA33175_taxonomy.qza"
-#sample-metadata file describing samples metadata; it is created automatically if it doesn't exist, but the path should exist
+#sample-metadata file describing samples metadata; it is created automatically if it doesn't exist
 SAMPLE_METADATA <- "/path/to/sample-metadata.tsv"
 ########################################################################################################
 #load BioStrings package
@@ -80,3 +82,4 @@ PORECHOP <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/porechop")
 PYCOQC <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/pycoQC")
 #NANOFILT
 NANOFILT <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/NanoFilt")
+

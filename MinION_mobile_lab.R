@@ -152,6 +152,11 @@ if (!dir.exists(d2)) {
   }
   cat(text = "\n", file = logfile, append = TRUE)
   cat(text = "\n")
+  cat(text = paste0("Taxonomic classifier: ", CLASSIFIER), file = logfile, sep = ", ", append = TRUE)
+  cat(text = paste0("Taxonomic classifier: ", CLASSIFIER), sep = ", ")
+
+  cat(text = "\n", file = logfile, append = TRUE)
+  cat(text = "\n")
 } else {
   cat(text = paste0(d2, " directory already exists; delete or rename it and then restart the analysis!"), file = logfile, sep = "\n", append = TRUE)
   cat(text = paste0(d2, " directory already exists; delete or rename it and then restart the analysis!"), sep = "\n")
@@ -330,7 +335,7 @@ cat(text = paste0("Running the MetONTIIME pipeline"), sep = "\n")
 cat(text = "\n", file = logfile, append = TRUE)
 cat(text = "\n")
 
-system(paste0(MetONTIIME, " ", d3, " ", SAMPLE_METADATA, " ", DB, " ", TAXONOMY, " ", num_threads))
+system(paste0(MetONTIIME, " ", d3, " ", SAMPLE_METADATA, " ", DB, " ", TAXONOMY, " ", num_threads, " ", CLASSIFIER))
 
 cat(text = paste0("Workflow ended at ", date(), "!"), file = logfile, sep = "\n", append = TRUE)  
 cat(text = paste0("Workflow ended at ", date(), "!"), sep = "\n")
