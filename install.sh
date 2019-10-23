@@ -19,7 +19,7 @@
 #
 
 PIPELINE_DIR=$(realpath $( dirname "${BASH_SOURCE[0]}" ))
-MINICONDA_DIR=$(which conda | sed 's/bin.*$//')
+MINICONDA_DIR=$(which conda | sed 's/miniconda3.*$/miniconda3/')
 conda config --add channels bioconda
 conda config --add channels conda-forge
 conda config --add channels r
