@@ -70,6 +70,7 @@ Outputs (saved in \<fast5_dir\>\_analysis/analysis):
 * feature-table_relfreq.tsv: file containing the proportion of reads assigned to each taxa for each sample
 * species_counts.txt: subset of feature-table_absfreq.tsv file, containing only species names and counts
 * taxa-bar-plots.qzv: _QIIME2_ visualization artifact of barplots with taxonomy abundances
+* taxa-bar-plots-no-Unassigned.qzv: _QIIME2_ visualization artifact of barplots with taxonomy abundances excluding Unassigned reads
 * demux_summary.qzv: _QIIME2_ visualization artifact with summary of sequences assigned to each sample after demultiplexing
 * logfile.txt, manifest.txt, sequences.qza, table.qz*, rep-seqs.qz*, taxonomy.qz*, table_collapsed.qza, feature-table_absfreq.biom, table_collapsed_relfreq.qz*, feature-table_relfreq.biom: temporary files useful for debugging or for further analyses
 
