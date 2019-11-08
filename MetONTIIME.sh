@@ -116,7 +116,6 @@ else
   --o-classification taxonomy.qza
 fi
 
-
 qiime metadata tabulate \
   --m-input-file taxonomy.qza \
   --o-visualization taxonomy.qzv
@@ -126,6 +125,18 @@ qiime taxa barplot \
   --i-taxonomy taxonomy.qza \
   --m-metadata-file $SAMPLE_METADATA \
   --o-visualization taxa-bar-plots.qzv
+
+qiime taxa filter-table \
+  --i-table table.qza \
+  --i-taxonomy taxonomy.qza \
+  --p-exclude Unassigned \
+  --o-filtered-table table-no-Unassigned.qza
+
+qiime taxa barplot \
+  --i-table table-no-Unassigned.qza \
+  --i-taxonomy taxonomy.qza \
+  --m-metadata-file $SAMPLE_METADATA \
+  --o-visualization taxa-bar-plots-no-Unassigned.qzv
 
 qiime taxa collapse \
 --i-table table.qza --i-taxonomy taxonomy.qza \
