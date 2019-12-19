@@ -131,6 +131,12 @@ source activate MetONTIIME_env
 qiime tools view <file.qz*>
 ```
 
+In particular, you should get an interactive taxonomy barplot, describing the composition of each sample at the desired taxonomic level.
+
+<p align="center">
+  <img src="Figures/BC04_taxa_barplot.png" alt="drawing" width="550" title="BC04_taxa_barplot">
+</p>
+
 ## Citations
 
 The MetONTIIME pipeline is composed of a preprocessing pipeline inherited from [ONTrack](https://github.com/MaestSi/ONTrack) and of some wrapper scripts for [QIIME2](https://qiime2.org/) and [entrez qiime](https://github.com/bakerccm/entrez_qiime). Please, refer to the following manuscripts for further information.
