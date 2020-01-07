@@ -52,9 +52,10 @@ primers_length <- 25
 disable_porechop_demu_flag <- 1
 #min read quality value
 min_qual <- 7
-#Choose taxonomic classifier between Blast and Vsearch; similar results are expected, but Vsearch is multi-threaded
+#Choose taxonomic classifier between Blast and Vsearch; similar results are expected, but Vsearch is multi-threaded (but slower)
 CLASSIFIER <- "Blast"
 ########################################################################################################
+#PIPELINE DIR
 PIPELINE_DIR <- "/path/to/MetONTIIME"
 #MINICONDA DIR
 MINICONDA_DIR <- "/path/to/miniconda3"
@@ -66,14 +67,13 @@ DB <- "/path/to/PRJNA33175_Bacterial_sequences.qza"
 TAXONOMY <- "/path/to/PRJNA33175_taxonomy.qza"
 #sample-metadata file describing samples metadata; it is created automatically if it doesn't exist
 SAMPLE_METADATA <- "/path/to/sample-metadata.tsv"
-########################################################################################################
+########## End of user editable region ##################################################################
 #load BioStrings package
 suppressMessages(library(Biostrings))
 #path to MetONTIIME.sh
 MetONTIIME <- paste0(PIPELINE_DIR, "/MetONTIIME.sh")
 #path to subsample fast5
 subsample_fast5 <- paste0(PIPELINE_DIR, "/subsample_fast5.sh")
-#########################################################################################################
 #SEQTK
 SEQTK <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/seqtk")
 #PORECHOP
