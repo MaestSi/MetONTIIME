@@ -106,7 +106,7 @@ Outputs (saved in \<fast5_dir\>\_analysis/preprocessing):
 
 Usage: Evaluate_diversity.sh -w \<working_directory\> -m \<sample_metadata\> -d \<sampling_depth\> -t \<threads\>
 
-Note: can be run in background with nohup
+Note: can be run in background with nohup; this script is experimental, suggestions for improving the logic behind it are more than welcome; the script subsamples the same number of reads for each sample and considers these to be the representative sequences. It then computes some diversity metrics.
 
 Inputs:
 
@@ -120,6 +120,23 @@ Outputs:
 * core-metrics-results\_\<sampling_depth\>\_subsampled: folder containing some alpha and beta diversity metrics
 * alpha-rarefaction\_\<sampling_depth\>\_subsampled.qzv: visualization artifact describing alpha diversity as a function of sampling depth
 * \<"sample_name"\>\_\<sampling_depth\>\_subsampled.fastq.gz, manifest\_\<sampling_depth\>\_subsampled.txt, aligned-repseqs\_\<sampling_depth\>\_subsampled.qza, masked-aligned-rep-seqs\_\<sampling_depth\>\_subsampled.qza, rooted-tree\_\<sampling_depth\>\_subsampled.qza, unrooted-tree\_\<sampling_depth\>\_subsampled.qza: temporary files generated for calculating diversity metrics
+
+## Starting analysis from fastq.gz files
+
+In case you have performed live basecalling and demultiplexing, now embedded in MinKNOW, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction:
+```
+source activate MetONTIIME_env
+nohup ./MetONTIIME.sh <working_dir> <metadata file> <sequences qiime2 artifact> <taxonomy qiime2 artifact> <threads> <taxonomic classifier> &
+```
+where:
+```
+<working_dir>: directory containing fastq.gz files
+<metadata file>: full path to metadata file; if the file doesn't exist yet, it is created by the pipeline
+<sequences qiime2 artifact>: <file name>_sequence.qza QIIME2 artifact, may be created by Import_database.sh script
+<taxonomy qiime2 artifact>: <file name>_taxonomy.qza QIIME2 artifact, may be created by Import_database.sh script
+<threads>: maximum number of threads used
+<taxonomic classifier>: either Blast or Vsearch
+```
 
 ## Auxiliary scripts
 
