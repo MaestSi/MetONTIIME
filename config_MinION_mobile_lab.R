@@ -36,6 +36,8 @@ flowcell <- "FLO-MIN106"
 fast_basecalling_flag <- 1
 #pair_strands_flag <- 1 if, in case a 1d2 kit and FLO-MIN107 flow-cell have been used, you want to perform 1d2 basecalling; otherwise set pair_strands_flag <- 0
 pair_strands_flag <- 0
+#require_two_barcodes_flag <- 1 if you want to keep only reads with a barcode (tag) at both ends of the read; otherwise set require_two_barcodes_flag <- 0
+require_two_barcodes_flag <- 0
 #save_space_flag <- 1 if you want temporary files to be automatically deleted; otherwise set save_space_flag <- 0
 save_space_flag <- 0
 #set the maximum number of threads to be used
@@ -48,8 +50,6 @@ fixed_lenfil_flag <- 1
 lenfil_tol <- 300
 #set primers length [bp]
 primers_length <- 25
-#if disable_porechop_demu_flag <- 1 porechop is only used for adapters trimming and not for doing a second round of demultiplexing; otherwise set disable_porechop_demu_flag <- 0
-disable_porechop_demu_flag <- 1
 #min read quality value
 min_qual <- 7
 #Choose taxonomic classifier between Blast and Vsearch; similar results are expected, but Vsearch is multi-threaded (but slower)
@@ -67,7 +67,7 @@ DB <- "/path/to/PRJNA33175_Bacterial_sequences.qza"
 TAXONOMY <- "/path/to/PRJNA33175_taxonomy.qza"
 #sample-metadata file describing samples metadata; it is created automatically if it doesn't exist
 SAMPLE_METADATA <- "/path/to/sample-metadata.tsv"
-########## End of user editable region ##################################################################
+########## End of user editable region #################################################################
 #load BioStrings package
 suppressMessages(library(Biostrings))
 #path to MetONTIIME.sh
@@ -76,8 +76,6 @@ MetONTIIME <- paste0(PIPELINE_DIR, "/MetONTIIME.sh")
 subsample_fast5 <- paste0(PIPELINE_DIR, "/subsample_fast5.sh")
 #SEQTK
 SEQTK <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/seqtk")
-#PORECHOP
-PORECHOP <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/porechop")
 #PYCOQC
 PYCOQC <- paste0(MINICONDA_DIR, "/envs/MetONTIIME_env/bin/pycoQC")
 #NANOFILT

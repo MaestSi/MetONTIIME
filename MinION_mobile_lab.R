@@ -39,6 +39,10 @@ if (!exists("fast_basecalling_flag") || flowcell == "FLO-MIN107") {
   fast_basecalling_flag <- 0
 }
 
+if (!exists("require_two_barcodes_flag")) {
+  require_two_barcodes_flag <- 0
+}
+
 if (!exists("amplicon_length")) {
   amplicon_length <- 710
 }
@@ -53,10 +57,6 @@ if (!exists("lenfil_tol")) {
 
 if (!exists("pair_strands_flag") || flowcell == "FLO-MIN106") {
   pair_strands_flag <- 0
-}
-
-if (!exists("disable_porechop_demu_flag")) {
-  disable_porechop_demu_flag <- 0
 }
 
 if (!exists("min_qual")) {
@@ -142,13 +142,12 @@ if (!dir.exists(d2)) {
     cat(text = "Basecalling model: high-accuracy", file = logfile, sep = "\n", append = TRUE)
     cat(text = "Basecalling model: high-accuracy", sep = "\n")
   }
-  cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling"), file = logfile, sep = ", ", append = TRUE)
-  cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling"), sep = ", ")
-  if (disable_porechop_demu_flag == 1) {
-    cat(text = "\n", file = logfile, append = TRUE)
-    cat(text = "\n")
-    cat(text = paste0("The second round of demultiplexing by Porechop is going to be be skipped"), file = logfile, sep = ", ", append = TRUE)
-    cat(text = paste0("The second round of demultiplexing by Porechop is going to be be skipped"), sep = ", ")
+  if (require_two_barcodes_flag == 1) {
+    cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling, keeping only reads with barcodes at both ends of the read"), file = logfile, sep = ", ", append = TRUE)
+    cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling, keeping only reads with barcodes at both ends of the read"), sep = ", ")
+  } else  {
+    cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling"), file = logfile, sep = ", ", append = TRUE)
+    cat(text = paste0("Demultiplexing is going to be performed by guppy_barcoder after basecalling"), sep = ", ")
   }
   cat(text = "\n", file = logfile, append = TRUE)
   cat(text = "\n")
@@ -193,7 +192,11 @@ cat(text = "\n")
 
 cat(text = paste0("Demultiplexing started at ", date()), file = logfile, sep = "\n", append = TRUE)
 cat(text = paste0("Demultiplexing started at ", date()), sep = "\n")
-system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
+if (require_two_barcodes_flag == 1) {
+  system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing,  " --trim_barcodes --require_barcodes_both_ends --num_extra_bases_trim ", primers_length, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
+} else {
+  system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing,  " --trim_barcodes --num_extra_bases_trim ", primers_length, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
+}
 cat(text = paste0("Demultiplexing finished at ", date()), file = logfile, sep = "\n", append = TRUE)
 cat(text = paste0("Demultiplexing finished at ", date()), sep = "\n")
 cat(text = "\n", file = logfile, append = TRUE)
@@ -234,22 +237,13 @@ demu_files <- list.files(path = d2_preprocessing, pattern = "BC", full.names = T
 for (i in 1:length(demu_files)) {
   BC_val_curr <- substr(x = basename(demu_files[i]), start = 3, stop = 4)
   if (paste0("BC", BC_val_curr) %in% BC_int) {
-    cat(text = paste0("Now trimming adapters with Porechop for sample BC", BC_val_curr), file = logfile, sep = "\n", append = TRUE)
-    cat(text = paste0("Now trimming adapters with Porechop for sample BC", BC_val_curr), sep = "\n")
-    if (disable_porechop_demu_flag == 1) {
-      system(paste0("mkdir ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp"))
-      system(paste0(PORECHOP, " -i ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq -o ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp/BC", BC_val_curr, ".fastq  --extra_end_trim ", primers_length))
-    } else {
-      system(paste0(PORECHOP, " -i ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq -b ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp --require_two_barcodes --extra_end_trim ", primers_length))
-    }
-    fastq_file_curr <- list.files(path = paste0(d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp"), pattern = paste0("BC", BC_val_curr, "\\.fastq"), full.names = TRUE)
+    fastq_file_curr <- list.files(path = paste0(d2_preprocessing), pattern = paste0("BC", BC_val_curr, "_tmp1\\.fastq"), full.names = TRUE)
     if (length(fastq_file_curr) == 0) {
       BC_int <- setdiff(BC_int, paste0("BC", BC_val_curr))
       BC_trash <- c(BC_trash, paste0("BC", BC_val_curr))
       next
     }
-    system(paste0("cp ", d2_preprocessing, "/BC", BC_val_curr, "_porechop_dir_tmp/BC", BC_val_curr, ".fastq ", d2_preprocessing, "/BC", BC_val_curr, "_tmp2.fastq"))
-    system(paste0(SEQTK, " seq -A ", d2_preprocessing, "/BC", BC_val_curr, "_tmp2.fastq > ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fasta"))
+    system(paste0(SEQTK, " seq -A ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq > ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fasta"))
     sequences <- readDNAStringSet(paste0(d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fasta"), "fasta")
     ws <- width(sequences)
     read_length <- ws
@@ -266,7 +260,7 @@ for (i in 1:length(demu_files)) {
     read_length_ok <- ws_ok
     cat(text = paste0("Now filtering out reads with quality lower than ", min_qual, ", shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), file = logfile, sep = "\n", append = TRUE)
     cat(text = paste0("Now filtering out reads with quality lower than ", min_qual, ", shorter than ", sprintf("%.0f", lb), " and longer than ", sprintf("%.0f", ub), " bp for sample BC", BC_val_curr), sep = "\n")
-    system(paste0("cat ", d2_preprocessing, "/BC", BC_val_curr, "_tmp2.fastq | ", NANOFILT, " --length ", lb, " --maxlength ", ub, " -q ", min_qual, " > ", d3, "/BC", BC_val_curr, ".fastq"))
+    system(paste0("cat ", d2_preprocessing, "/BC", BC_val_curr, "_tmp1.fastq | ", NANOFILT, " --length ", lb, " --maxlength ", ub, " -q ", min_qual, " > ", d3, "/BC", BC_val_curr, ".fastq"))
     system(paste0(SEQTK, " seq -A ", d3, "/BC", BC_val_curr, ".fastq > ", d3, "/BC", BC_val_curr, ".fasta"))
     if (length(grep(x = readLines(paste0( d3, "/BC", BC_val_curr, ".fasta")), pattern = "^>")) < 1) {
       cat(text = paste0("WARNING: skipping sample BC", BC_val_curr, ", since no reads survived the length or quality filtering!"), file = logfile, sep = "\n", append = TRUE)
