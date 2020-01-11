@@ -28,7 +28,7 @@ wget https://data.qiime2.org/distro/core/qiime2-2019.10-py36-linux-conda.yml
 conda env create -n MetONTIIME_env --file qiime2-2019.10-py36-linux-conda.yml
 rm qiime2-2019.10-py36-linux-conda.yml
 source activate MetONTIIME_env
-conda install seqtk porechop NanoFilt
+conda install seqtk NanoFilt
 pip install pycoQC
 echo -e "\n"
 echo "Modify variables PIPELINE_DIR and MINICONDA_DIR in config_MinION_mobile_lab.R"
