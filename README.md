@@ -123,7 +123,7 @@ Outputs:
 
 ## Starting analysis from fastq.gz files
 
-In case you have performed live basecalling and demultiplexing, now embedded in MinKNOW, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction:
+In case you have already performed basecalling, demultiplexing, quality filtering, adapters and PCR primers trimming, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction:
 ```
 source activate MetONTIIME_env
 nohup ./MetONTIIME.sh <working_dir> <metadata file> <sequences qiime2 artifact> <taxonomy qiime2 artifact> <threads> <taxonomic classifier> &
