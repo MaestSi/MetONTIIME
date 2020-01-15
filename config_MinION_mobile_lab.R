@@ -32,7 +32,7 @@ barcode_kits <- c("SQK-RAB204")
 kit <- "SQK-RAB204"
 #flowcell chemistry (R9.4/R9.5 chemistry)
 flowcell <- "FLO-MIN106"
-#fast_basecalling_flag <- 1 if you want to use the fast basecalling algorithm; otherwise set fast_basecalling_flag <- 0 if you want to use the accurate but slow one (FLO-MIN106 only)
+#fast_basecalling_flag <- 1 if you want to use the fast basecalling algorithm (FLO-MIN106 only); otherwise set fast_basecalling_flag <- 0 if you want to use the accurate but slow one
 fast_basecalling_flag <- 1
 #pair_strands_flag <- 1 if, in case a 1d2 kit and FLO-MIN107 flow-cell have been used, you want to perform 1d2 basecalling; otherwise set pair_strands_flag <- 0
 pair_strands_flag <- 0
