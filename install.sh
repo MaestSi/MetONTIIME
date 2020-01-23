@@ -32,5 +32,6 @@ conda install seqtk NanoFilt
 pip install pycoQC
 echo -e "\n"
 echo "Modify variables PIPELINE_DIR and MINICONDA_DIR in config_MinION_mobile_lab.R"
-echo -e "PIPELINE_DIR: $PIPELINE_DIR"
-echo -e "MINICONDA_DIR: $MINICONDA_DIR \n"
+echo -e "PIPELINE_DIR <- \"$PIPELINE_DIR\""
+echo -e "MINICONDA_DIR <- \"$MINICONDA_DIR\""
+echo -e "\n"
