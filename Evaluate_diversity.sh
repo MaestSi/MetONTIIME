@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-usage="$(basename "$0") [-w WORKING_DIRECTORY] [-m SAMPLE_METADATA] [-d SAMPLING_DEPTH] [-t THREADS]"
+usage="$(basename "$0") [-w WORKING_DIRECTORY] [-m SAMPLE_METADATA] [-d SAMPLING_DEPTH] [-t THREADS] [-c CLUSTERING_THRESHOLD]"
 
 while :
 do
@@ -45,7 +45,16 @@ do
       -t)
            THREADS=$2
            shift 2
-           echo "Number of THREADS: $THREADS"
+           echo "Number of threads: $THREADS"
+           ;;
+      -c)
+           CLUSTERING_THRESHOLD=$2
+           shift 2
+            echo "Clustering threshold: $CLUSTERING_THRESHOLD"
+           if (( $(bc <<<"$CLUSTERING_THRESHOLD > 1") )); then
+             echo "Choose a value for -c parameter in (0, 1]"
+             exit 1
+           fi
            ;;
        --) # End of all options
            shift
@@ -65,7 +74,7 @@ done
 
 source activate MetONTIIME_env
 
-FASTQ_FILES=$(realpath $(find $WORKING_DIRECTORY | grep "\.fastq\.gz" | grep -v "subsampled\.fastq\.gz"))
+FASTQ_FILES=$(realpath $(find $WORKING_DIRECTORY -maxdepth 1 | grep "\.fastq\.gz" | grep -v "subsampled\.fastq\.gz"))
 
 MANIFEST_SUB=$WORKING_DIRECTORY"/manifest_"$SAMPLING_DEPTH"_subsampled.txt"
 
@@ -94,7 +103,7 @@ qiime vsearch dereplicate-sequences \
 qiime vsearch cluster-features-de-novo \
 --i-sequences "rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
 --i-table "table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
---p-perc-identity 1 \
+--p-perc-identity $CLUSTERING_THRESHOLD \
 --o-clustered-table "table_"$SAMPLING_DEPTH"_subsampled.qza" \
 --o-clustered-sequences "rep-seqs_"$SAMPLING_DEPTH"_subsampled.qza" \
 --p-threads $THREADS
