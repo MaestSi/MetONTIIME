@@ -50,7 +50,7 @@ do
       -c)
            CLUSTERING_THRESHOLD=$2
            shift 2
-            echo "Clustering threshold: $CLUSTERING_THRESHOLD"
+           echo "Clustering threshold: $CLUSTERING_THRESHOLD"
            if (( $(bc <<<"$CLUSTERING_THRESHOLD > 1") )); then
              echo "Choose a value for -c parameter in (0, 1]"
              exit 1
