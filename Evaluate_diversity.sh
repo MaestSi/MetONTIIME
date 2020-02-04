@@ -93,22 +93,22 @@ qiime tools import \
 --type 'SampleData[SequencesWithQuality]' \
 --input-path $MANIFEST_SUB \
 --input-format 'SingleEndFastqManifestPhred33V2' \
---output-path "sequences_"$SAMPLING_DEPTH"_subsampled.qza"
+--output-path $WORKING_DIRECTORY"/sequences_"$SAMPLING_DEPTH"_subsampled.qza"
 
 qiime vsearch dereplicate-sequences \
---i-sequences "sequences_"$SAMPLING_DEPTH"_subsampled.qza" \
---o-dereplicated-table "table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
---o-dereplicated-sequences "rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza"
+--i-sequences $WORKING_DIRECTORY"/sequences_"$SAMPLING_DEPTH"_subsampled.qza" \
+--o-dereplicated-table $WORKING_DIRECTORY"/table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
+--o-dereplicated-sequences $WORKING_DIRECTORY"/rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza"
 
 qiime vsearch cluster-features-de-novo \
---i-sequences "rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
---i-table "table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
+--i-sequences $WORKING_DIRECTORY"/rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
+--i-table $WORKING_DIRECTORY"/table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" \
 --p-perc-identity $CLUSTERING_THRESHOLD \
---o-clustered-table "table_"$SAMPLING_DEPTH"_subsampled.qza" \
---o-clustered-sequences "rep-seqs_"$SAMPLING_DEPTH"_subsampled.qza" \
+--o-clustered-table $WORKING_DIRECTORY"/table_"$SAMPLING_DEPTH"_subsampled.qza" \
+--o-clustered-sequences $WORKING_DIRECTORY"/rep-seqs_"$SAMPLING_DEPTH"_subsampled.qza" \
 --p-threads $THREADS
 
-rm "table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" "rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza"
+rm $WORKING_DIRECTORY"/table_tmp_"$SAMPLING_DEPTH"_subsampled.qza" $WORKING_DIRECTORY"/rep-seqs_tmp_"$SAMPLING_DEPTH"_subsampled.qza"
 
 qiime phylogeny align-to-tree-mafft-fasttree \
   --i-sequences $WORKING_DIRECTORY"/rep-seqs_"$SAMPLING_DEPTH"_subsampled.qza" \
