@@ -52,8 +52,14 @@ lenfil_tol <- 300
 primers_length <- 25
 #min read quality value
 min_qual <- 7
-#Choose taxonomic classifier between Blast and Vsearch; similar results are expected, but Vsearch is multi-threaded (but slower)
+#Choose taxonomic classifier between Blast and Vsearch; similar results are expected
 CLASSIFIER <- "Blast"
+#MAX_ACCEPTS is the maximum number of hits for each query; if a value > 1 is used, a consensus taxonomy for the MAX_ACCEPTS top hits is retrieved 
+MAX_ACCEPTS <- 1
+#QUERY_COV is the minimum fraction of a query sequence that should be aligned to a sequence in the database
+QUERY_COV <- 0.3
+#ID_THR is the minimum alignment identity threshold
+ID_THR <- 0.77
 ########################################################################################################
 #PIPELINE DIR
 PIPELINE_DIR <- "/path/to/MetONTIIME"
