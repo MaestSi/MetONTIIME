@@ -24,6 +24,9 @@ DB=$3
 TAXONOMY=$4
 THREADS=$5
 CLASSIFIER=$6
+MAX_ACCEPTS=$7
+QUERY_COV=$8
+ID_THR=$9
 
 FASTQ_FILES=$(realpath $(find $WORKING_DIR | grep "\.fastq\.gz"))
 MANIFEST=$WORKING_DIR"/manifest.txt"
@@ -87,19 +90,19 @@ if [ "$CLASSIFIER_UC" == "BLAST" ]; then
   --i-query rep-seqs.qza  \
   --i-reference-reads $DB \
   --i-reference-taxonomy $TAXONOMY \
-  --p-perc-identity 0.77 \
-  --p-query-cov 0.3 \
-  --p-maxaccepts 1 \
+  --p-perc-identity $ID_THR \
+  --p-query-cov $QUERY_COV \
+  --p-maxaccepts $MAX_ACCEPTS \
   --o-classification taxonomy.qza
 elif [ "$CLASSIFIER_UC" == "VSEARCH" ]; then
   qiime feature-classifier classify-consensus-vsearch \
     --i-query rep-seqs.qza  \
     --i-reference-reads $DB \
     --i-reference-taxonomy $TAXONOMY \
-    --p-perc-identity 0.77 \
-    --p-query-cov 0.3 \
+    --p-perc-identity $ID_THR \
+    --p-query-cov $QUERY_COV \
     --p-top-hits-only \
-    --p-maxaccepts 1 \
+    --p-maxaccepts $MAX_ACCEPTS \
     --p-strand 'both' \
     --p-unassignable-label 'Unassigned' \
     --p-threads $THREADS \
@@ -110,9 +113,9 @@ else
   --i-query rep-seqs.qza  \
   --i-reference-reads $DB \
   --i-reference-taxonomy $TAXONOMY \
-  --p-perc-identity 0.77 \
-  --p-query-cov 0.3 \
-  --p-maxaccepts 1 \
+  --p-perc-identity $ID_THR \
+  --p-query-cov $QUERY_COV \
+  --p-maxaccepts $MAX_ACCEPTS \
   --o-classification taxonomy.qza
 fi
 
