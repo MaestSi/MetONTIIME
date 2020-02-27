@@ -127,7 +127,7 @@ Outputs:
 In case you have already performed basecalling, demultiplexing, quality filtering, adapters and PCR primers trimming, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction:
 ```
 source activate MetONTIIME_env
-nohup ./MetONTIIME.sh <working_dir> <metadata file> <sequences qiime2 artifact> <taxonomy qiime2 artifact> <threads> <taxonomic classifier> &
+nohup ./MetONTIIME.sh <working_dir> <metadata file> <sequences qiime2 artifact> <taxonomy qiime2 artifact> <threads> <taxonomic classifier> <max accepts> <query coverage> <id thr> &
 ```
 where:
 ```
@@ -137,6 +137,9 @@ where:
 <taxonomy qiime2 artifact>: <file name>_taxonomy.qza QIIME2 artifact, may be created by Import_database.sh script
 <threads>: maximum number of threads used
 <taxonomic classifier>: either Blast or Vsearch
+<max accepts>: maximum number of hits; if a value > 1 is used, a consensus taxonomy for the top hits is retrieved 
+<query coverage>: minimum of a query sequence that should be aligned to a sequence in the database [0-1]
+<id thr>: minimum alignment identity threshold [0-1]
 ```
 
 ## Auxiliary scripts
