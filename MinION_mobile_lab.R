@@ -229,9 +229,9 @@ cat(text = "", file = logfile, sep = "\n", append = TRUE)
 cat(text = "", sep = "\n")
 
 if (pair_strands_flag == 1) {
-  system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -b ", d2_preprocessing, "/barcoding_summary.txt -o ", d2, "/qc/pycoQC_report.html"))
+  system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -b ", d2_preprocessing, "/barcoding_summary.txt -o ", d2, "/qc/pycoQC_report.html --min_pass_qual ", min_qual))
 } else {
-  system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -b ", d2_preprocessing, "/barcoding_summary.txt -o ", d2, "/qc/pycoQC_report.html"))
+  system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -b ", d2_preprocessing, "/barcoding_summary.txt -o ", d2, "/qc/pycoQC_report.html --min_pass_qual ", min_qual))
 }
 demu_files <- list.files(path = d2_preprocessing, pattern = "BC", full.names = TRUE)
 for (i in 1:length(demu_files)) {
@@ -329,7 +329,7 @@ cat(text = paste0("Running the MetONTIIME pipeline"), sep = "\n")
 cat(text = "\n", file = logfile, append = TRUE)
 cat(text = "\n")
 
-system(paste0(MetONTIIME, " ", d3, " ", SAMPLE_METADATA, " ", DB, " ", TAXONOMY, " ", num_threads, " ", CLASSIFIER))
+system(paste0(MetONTIIME, " ", d3, " ", SAMPLE_METADATA, " ", DB, " ", TAXONOMY, " ", num_threads, " ", CLASSIFIER, " ", MAX_ACCEPTS, " ", QUERY_COV, " ", ID_THR))
 
 cat(text = paste0("Workflow ended at ", date(), "!"), file = logfile, sep = "\n", append = TRUE)  
 cat(text = paste0("Workflow ended at ", date(), "!"), sep = "\n")
