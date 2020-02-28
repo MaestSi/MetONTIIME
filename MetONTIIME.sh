@@ -28,7 +28,7 @@ MAX_ACCEPTS=$7
 QUERY_COV=$8
 ID_THR=$9
 
-FASTQ_FILES=$(realpath $(find $WORKING_DIR | grep "\.fastq\.gz"))
+FASTQ_FILES=$(realpath $(find $WORKING_DIR -maxdepth 1 | grep "\.fastq\.gz"))
 MANIFEST=$WORKING_DIR"/manifest.txt"
 
 if [ ! -f "$MANIFEST" ]; then
