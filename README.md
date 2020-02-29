@@ -58,7 +58,7 @@ chmod 755 *
 ./install.sh
 ```
 
-A conda environment named _MetONTIIME_env_ is created, where seqtk, pycoQC, NanoFilt and qiime2-2019.10 are installed.
+A conda environment named _MetONTIIME_env_ is created, where seqtk, pycoQC, NanoFilt and qiime2-2020.2 are installed.
 Then, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _PIPELINE_DIR_ and _MINICONDA_DIR_ to the value suggested by the installation step.
 
 ## Usage
