@@ -1,6 +1,6 @@
 # MetONTIIME
 
-**MetONTIIME** is a Meta-barcoding pipeline for analysing ONT data in QIIME2 framework. The whole bioinformatic workflow consists of a preprocessing pipeline and a script emulating EPI2ME 16S workflow, Blasting each read against a user-defined database, so to make the whole bioinformatic analysis from raw fast5 files to taxonomy assignments straightforward and simple. Tested with Ubuntu 14.04.4 LTS. For comparison of results obtained changing the reference database and PCR primers, have a look at Stephane Plaisance's interesting [work](https://github.com/Nucleomics-VIB/InSilico_PCR).  
+**MetONTIIME** is a Meta-barcoding pipeline for analysing ONT data in QIIME2 framework. The whole bioinformatic workflow consists of a preprocessing pipeline and a script emulating EPI2ME 16S workflow, aligning each read against a user-defined database, so to make the whole bioinformatic analysis from raw fast5 files to taxonomy assignments straightforward and simple. Tested with Ubuntu 14.04.4 LTS. For comparison of results obtained changing the reference database and PCR primers, have a look at Stephane Plaisance's interesting [work](https://github.com/Nucleomics-VIB/InSilico_PCR).  
 
 ## Getting started
 
@@ -64,7 +64,7 @@ Then, you can open the **config_MinION_mobile_lab.R** file with a text editor an
 ## Usage
 
 The first time you run the _MetONTIIME_ pipeline on a new database downloaded from NCBI, you can use the **Import_database.sh** script for importing a fasta file as a pair of _QIIME2_ artifacts. This script downloads some taxonomy files from NCBI (~9.4 GB) and uses [entrez qiime](https://github.com/bakerccm/entrez_qiime) and _QIIME2_ to generate a _DNAFASTAFormat_ and a _HeaderlessTSVTaxonomyFormat_ artifacts, containing sequences and corresponding taxonomy. _Entrez_qiime_ is installed to a new conda environment named _entrez_qiime_env_.
-After this step, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _DB_ and _TAXONOMY_ to the newly generated _QIIME2_ artifacts. After that, you can run the full _MetONTIIME_ pipeline using the wrapper script **Launch_MinION_mobile_lab.sh**. The script **Evaluate_diversity.sh** can be used afterwards to generate a phylogenetic tree and compute some alpha and beta diversity metrics.
+After this step, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _DB_ and _TAXONOMY_ to the newly generated _QIIME2_ artifacts. Both Blast and Vsearch aligners are supported and can be selected setting _CLASSIFIER_ variable. When using Blast, a consensus taxonomy for up to _MAX_ACCEPTS_ hits is retrieved for each query. When using Vsearch, up to _MAX_ACCEPTS_ (e.g. 100) candidate hits are aligned and the top hit for each query is retrieved. After that, you can run the full _MetONTIIME_ pipeline using the wrapper script **Launch_MinION_mobile_lab.sh**. The script **Evaluate_diversity.sh** can be used afterwards to generate a phylogenetic tree and compute some alpha and beta diversity metrics.
 
 **Import_database.sh**
 
