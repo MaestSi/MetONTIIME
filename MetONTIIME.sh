@@ -101,9 +101,9 @@ elif [ "$CLASSIFIER_UC" == "VSEARCH" ]; then
     --i-reference-taxonomy $TAXONOMY \
     --p-perc-identity $ID_THR \
     --p-query-cov $QUERY_COV \
-    --p-maxaccepts $MAX_ACCEPTS \
+    --p-maxaccepts 100 \
     --p-maxrejects 100 \
-    --p-maxhits 1 \
+    --p-maxhits $MAX_ACCEPTS \
     --p-strand 'both' \
     --p-unassignable-label 'Unassigned' \
     --p-threads $THREADS \
