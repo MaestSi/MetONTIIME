@@ -54,7 +54,7 @@ primers_length <- 25
 min_qual <- 7
 #Choose taxonomic classifier between Blast and Vsearch; similar results are expected
 CLASSIFIER <- "Blast"
-#If CLASSIFIER <- "Blast" a consensus taxonomy for MAX_ACCEPTS hits is retrieved for each query; If CLASSIFIER <- "Vsearch"  MAX_ACCEPTS candidate hits are aligned and the top hit for each query is retrieved
+#MAX_ACCEPTS is the maximum number of hits for each query; if a value > 1 is used, a consensus taxonomy for the MAX_ACCEPTS hits is retrieved
 MAX_ACCEPTS <- 1
 #QUERY_COV is the minimum fraction of a query sequence that should be aligned to a sequence in the database
 QUERY_COV <- 0.3
