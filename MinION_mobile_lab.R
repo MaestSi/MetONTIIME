@@ -92,7 +92,7 @@ if (pair_strands_flag == 1) {
 
 demultiplexer <- paste0(BASECALLER_DIR, "/guppy_barcoder")
 
-basecaller_version <- system(paste0(basecaller, " --version"), intern = TRUE)
+basecaller_version <- system(paste0(basecaller, " --version"), intern = TRUE)[1]
 
 if (!dir.exists(d2)) {
   dir.create(d2)
