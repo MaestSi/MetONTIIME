@@ -175,9 +175,9 @@ cat(text = paste0("Basecalling started at ", date()), sep = "\n")
 
 num_threads_caller <- round(num_threads/4)
 if (fast_basecalling_flag == 1) {
-  system(paste0(basecaller, " -r -i ", d1, " --cpu_threads_per_caller ", num_threads_caller, " --num_callers 4", " -c dna_r9.4.1_450bps_fast.cfg --hp_correct TRUE --fast5_out -s ", d2_basecalling, " --disable_pings"))
+  system(paste0(basecaller, " -r -i ", d1, " --cpu_threads_per_caller ", num_threads_caller, " --num_callers 4", " -c dna_r9.4.1_450bps_fast.cfg --fast5_out -s ", d2_basecalling, " --disable_pings"))
 } else {
-  system(paste0(basecaller, " -r -i ", d1, " --cpu_threads_per_caller ", num_threads_caller, " --num_callers 4", " --flowcell ", flowcell, " --kit ", kit, " --hp_correct TRUE --fast5_out -s ", d2_basecalling, " --disable_pings"))
+  system(paste0(basecaller, " -r -i ", d1, " --cpu_threads_per_caller ", num_threads_caller, " --num_callers 4", " --flowcell ", flowcell, " --kit ", kit, " --fast5_out -s ", d2_basecalling, " --disable_pings"))
 }
 
 if (pair_strands_flag == 1) {
