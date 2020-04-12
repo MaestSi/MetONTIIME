@@ -142,46 +142,53 @@ qiime taxa barplot \
   --m-metadata-file $SAMPLE_METADATA \
   --o-visualization taxa-bar-plots-no-Unassigned.qzv
 
-qiime taxa collapse \
---i-table table.qza --i-taxonomy taxonomy.qza \
---p-level 6 \
---o-collapsed-table table_collapsed.qza
-
-qiime tools export \
---input-path table_collapsed.qza \
---output-path .
-
-mv feature-table.biom feature-table_absfreq.biom
-
-biom convert \
--i feature-table_absfreq.biom \
--o feature-table_absfreq.tsv \
---to-tsv \
---table-type 'Taxon table'
-
-qiime feature-table relative-frequency \
---i-table table_collapsed.qza \
---o-relative-frequency-table table_collapsed_relfreq.qza
+for lev in {1..7}; do
+  qiime taxa collapse \
+  --i-table table.qza --i-taxonomy taxonomy.qza \
+  --p-level $lev \
+  --o-collapsed-table table_collapsed_absfreq_level$lev.qza
 
 qiime metadata tabulate  \
---m-input-file table_collapsed_relfreq.qza  \
---o-visualization table_collapsed_relfreq.qzv
+  --m-input-file table_collapsed_absfreq_level$lev.qza  \
+  --o-visualization table_collapsed_absfreq_level$lev.qzv
 
-qiime tools export \
---input-path table_collapsed_relfreq.qza \
---output-path .
+  qiime tools export \
+  --input-path table_collapsed_absfreq_level$lev.qza \
+  --output-path .
 
-mv feature-table.biom feature-table_relfreq.biom
+  mv feature-table.biom feature-table_absfreq_level$lev.biom
 
-biom convert \
--i feature-table_relfreq.biom \
--o feature-table_relfreq.tsv \
---to-tsv \
---table-type 'Taxon table'
+  biom convert \
+  -i feature-table_absfreq_level$lev.biom \
+  -o feature-table_absfreq_level$lev.tsv \
+  --to-tsv \
+  --table-type 'Taxon table'
 
-cat feature-table_absfreq.tsv | grep "#" > header
-cat feature-table_absfreq.tsv | grep -v -P "Unassigned|#|BC|NA" | cut -f6 -d';' | tr "\t" "," |  grep -v "^__" | sort -t"," -k2,2 -nr | tr "," "\t" > species_counts_noheader.txt
+  qiime feature-table relative-frequency \
+  --i-table table_collapsed_absfreq_level$lev.qza \
+  --o-relative-frequency-table table_collapsed_relfreq_level$lev.qza
 
-cat header species_counts_noheader.txt > species_counts.txt
+  qiime metadata tabulate  \
+  --m-input-file table_collapsed_relfreq_level$lev.qza  \
+  --o-visualization table_collapsed_relfreq_level$lev.qzv
 
-rm species_counts_noheader.txt header
+  qiime tools export \
+  --input-path table_collapsed_relfreq_level$lev.qza \
+  --output-path .
+
+  mv feature-table.biom feature-table_relfreq_level$lev.biom
+
+  biom convert \
+  -i feature-table_relfreq_level$lev.biom \
+  -o feature-table_relfreq_level$lev.tsv \
+  --to-tsv \
+  --table-type 'Taxon table'
+
+  cat feature-table_absfreq_level$lev.tsv | grep "#" > header
+  cat feature-table_absfreq_level$lev.tsv | grep -v -P "Unassigned|#|BC|NA" | cut -f$lev -d';' | tr "\t" "," | grep -v "^__" | sort -t"," -k2,2 -nr | tr "," "\t" > "feature-table_absfreq_level"$lev"_stringent_noheader.tsv"
+  cat header "feature-table_absfreq_level"$lev"_stringent_noheader.tsv" > "feature-table_absfreq_level"$lev"_stringent.tsv"
+  rm "feature-table_absfreq_level"$lev"_stringent_noheader.tsv" header
+done
+
+mkdir collapsed_feature_tables
+mv table_collapsed* feature-table_*freq_level*.biom feature-table_absfreq_level*_stringent.tsv collapsed_feature_tables
