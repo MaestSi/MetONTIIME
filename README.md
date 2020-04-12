@@ -156,7 +156,7 @@ Note: configuration script, must be modified before running _Launch_MinION_mobil
 
 **MetONTIIME.sh**
 
-Note: script run by **MinION_mobile_lab.R** for running Blast analysis in _QIIME2_ framework.
+Note: script run by **MinION_mobile_lab.R** for performing taxonomic classification in _QIIME2_ framework.
 
 **subsample_fast5.sh**
 
