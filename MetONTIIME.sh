@@ -179,9 +179,8 @@ biom convert \
 --to-tsv \
 --table-type 'Taxon table'
 
-#NCBI database
 cat feature-table_absfreq.tsv | grep "#" > header
-cat feature-table_absfreq.tsv | grep -v -P "Unassigned|#|BC|NA" | cut -f6 -d';' | tr "\t" "," | sort -t"," -k2,2 -nr | tr "," "\t" > species_counts_noheader.txt
+cat feature-table_absfreq.tsv | grep -v -P "Unassigned|#|BC|NA" | cut -f6 -d';' | tr "\t" "," |  grep -v "^__" | sort -t"," -k2,2 -nr | tr "," "\t" > species_counts_noheader.txt
 
 cat header species_counts_noheader.txt > species_counts.txt
 
