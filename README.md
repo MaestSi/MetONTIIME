@@ -85,9 +85,8 @@ Input:
 * \<fast5_dir\>: directory containing raw fast5 files
 
 Outputs (saved in \<fast5_dir\>\_analysis/analysis):
-* feature-table_absfreq.tsv: file containing the number of reads assigned to each taxa for each sample
-* feature-table_relfreq.tsv: file containing the proportion of reads assigned to each taxa for each sample
-* species_counts.txt: subset of feature-table_absfreq.tsv file, containing only species names and counts
+* feature-table_absfreq.tsv, feature-table_absfreq_level$lev.tsv: files containing the number of reads assigned to each taxa for each sample, collapsed at different taxonomic levels
+* feature-table_relfreq.tsv, feature-table_relfreq_level$lev.tsv: files containing the proportion of reads assigned to each taxa for each sample, collapsed at different taxonomic levels
 * taxa-bar-plots.qzv: _QIIME2_ visualization artifact of barplots with taxonomy abundances
 * taxa-bar-plots-no-Unassigned.qzv: _QIIME2_ visualization artifact of barplots with taxonomy abundances excluding Unassigned reads
 * demux_summary.qzv: _QIIME2_ visualization artifact with summary of sequences assigned to each sample after demultiplexing
