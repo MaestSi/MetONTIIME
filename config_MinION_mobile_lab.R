@@ -42,13 +42,13 @@ require_two_barcodes_flag <- 0
 save_space_flag <- 0
 #set the maximum number of threads to be used
 num_threads <- 30
-#set a mean amplicon length [bp]
+#set a mean amplicon length [bp]: for amplicon length I refer to the length of the biological sequence after adapters and primers trimming
 amplicon_length <- 1400
 #fixed_lenfil_flag <- 1 if you want to keep reads in the range [amplicon_length - lenfil_tol/2; amplicon_length + lenfil_tol/2]; otherwise set fixed_lenfil_flag <- 1 if you want to keep reads in the range [mean_length -2*sd; mean_length + 2*sd] where mean_length and sd are evaluated on a sample basis
 fixed_lenfil_flag <- 1
 #if fixed_lenfil_flag <- 1, lenfil_tol [bp] is the size of the window centered in amplicon_length for reads to be kept
 lenfil_tol <- 300
-#set primers length [bp]
+#set primers length [bp]; if the kit you used already contains PCR primers as part of the adapters, you can set this value to 0
 primers_length <- 25
 #min read quality value
 min_qual <- 7
