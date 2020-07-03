@@ -7,7 +7,7 @@
 **Prerequisites**
 
 * Miniconda3.
-Tested with conda 4.6.11.
+Tested with conda 4.8.3.
 ```which conda``` should return the path to the executable.
 If you don't have Miniconda3 installed, you could download and install it with:
 ```
@@ -18,7 +18,7 @@ chmod 755 Miniconda3-latest-Linux-x86_64.sh
 
 Then, after completing _MetONTIIME_ installation, set the _MINICONDA_DIR_ variable in **config_MinION_mobile_lab.R** to the full path to miniconda3 directory.
 
-* Guppy, the software for basecalling and demultiplexing provided by ONT. Tested with Guppy v3.6.
+* Guppy, the software for basecalling and demultiplexing provided by ONT. Tested with Guppy v4.0.
 If you don't have [Guppy](https://community.nanoporetech.com/downloads) installed, choose an appropriate version and install it.
 For example, you could download and unpack the archive with:
 ```
@@ -28,8 +28,8 @@ tar -xf ont-guppy-cpu_version_of_interest.tar.gz
 A directory _ont-guppy-cpu_ should have been created in your current directory.
 Then, after completing _MetONTIIME_ installation, set the _BASECALLER_DIR_ variable in **config_MinION_mobile_lab.R** to the full path to _ont-guppy-cpu/bin_ directory.
 
-* A fasta file downloaded from NCBI that you want to use as a reference database, or a preformatted [marker gene reference database](https://docs.qiime2.org/2020.2/data-resources/#taxonomy-classifiers-for-use-with-q2-feature-classifier). For example, if you want to use the same database used by the EPI2ME 16S workflow for bacterial 16S gene, you can go to [BioProject 33175](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D), click _send to_, select _Complete Record_ and _File_, set the _Format_ to _FASTA_ and then click _Create File_; the database can then be imported with **Import_database.sh** script after completing installation.
-In case you have downloaded a [marker gene reference database](https://docs.qiime2.org/2020.2/data-resources/#taxonomy-classifiers-for-use-with-q2-feature-classifier) instead, you already have sequence and taxonomy information in two separate text files. For example, if you want to download and import Silva_132_release database for 16S gene with sequences clustered at 99% identity, you can use the following instructions, after completing installation:
+* A fasta file downloaded from NCBI that you want to use as a reference database, or a preformatted [marker gene reference database](https://docs.qiime2.org/2020.6/data-resources/#taxonomy-classifiers-for-use-with-q2-feature-classifier). For example, if you want to use the same database used by the EPI2ME 16S workflow for bacterial 16S gene, you can go to [BioProject 33175](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D), click _send to_, select _Complete Record_ and _File_, set the _Format_ to _FASTA_ and then click _Create File_; the database can then be imported with **Import_database.sh** script after completing installation.
+In case you have downloaded a [marker gene reference database](https://docs.qiime2.org/2020.6/data-resources/#taxonomy-classifiers-for-use-with-q2-feature-classifier) instead, you already have sequence and taxonomy information in two separate text files. For example, if you want to download and import Silva_132_release database for 16S gene with sequences clustered at 99% identity, you can use the following instructions, after completing installation:
 ```
 wget https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
 
@@ -58,7 +58,7 @@ chmod 755 *
 ./install.sh
 ```
 
-A conda environment named _MetONTIIME_env_ is created, where seqtk, pycoQC, NanoFilt and qiime2-2020.2 are installed.
+A conda environment named _MetONTIIME_env_ is created, where seqtk, pycoQC, NanoFilt and qiime2-2020.6 are installed.
 Then, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _PIPELINE_DIR_ and _MINICONDA_DIR_ to the value suggested by the installation step.
 
 ## Usage
