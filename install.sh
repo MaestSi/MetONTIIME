@@ -24,9 +24,9 @@ conda config --add channels bioconda
 conda config --add channels conda-forge
 conda config --add channels r
 conda config --add channels anaconda
-wget https://data.qiime2.org/distro/core/qiime2-2020.2-py36-linux-conda.yml
-conda env create -n MetONTIIME_env --file qiime2-2020.2-py36-linux-conda.yml
-rm qiime2-2020.2-py36-linux-conda.yml
+wget https://data.qiime2.org/distro/core/qiime2-2020.6-py36-linux-conda.yml
+conda env create -n MetONTIIME_env --file qiime2-2020.6-py36-linux-conda.yml
+rm qiime2-2020.6-py36-linux-conda.yml
 source activate MetONTIIME_env
 conda install seqtk NanoFilt
 pip install pycoQC
