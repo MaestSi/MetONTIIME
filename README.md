@@ -22,7 +22,7 @@ Then, after completing _MetONTIIME_ installation, set the _MINICONDA_DIR_ variab
 If you don't have [Guppy](https://community.nanoporetech.com/downloads) installed, choose an appropriate version and install it.
 For example, you could download and unpack the archive with:
 ```
-wget https://mirror.oxfordnanoportal.com/software/analysis/ont-guppy-cpu_version_of_interest.tar.gz
+wget /path/to/ont-guppy-cpu_version_of_interest.tar.gz
 tar -xf ont-guppy-cpu_version_of_interest.tar.gz
 ```
 A directory _ont-guppy-cpu_ should have been created in your current directory.
