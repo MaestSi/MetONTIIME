@@ -2,6 +2,8 @@
 
 **MetONTIIME** is a Meta-barcoding pipeline for analysing ONT data in QIIME2 framework. The whole bioinformatic workflow consists of a preprocessing pipeline and a script emulating EPI2ME 16S workflow, aligning each read against a user-defined database, so to make the whole bioinformatic analysis from raw fast5 files to taxonomy assignments straightforward and simple. Tested with Ubuntu 14.04.4 LTS. For comparison of results obtained changing the reference database and PCR primers, have a look at Stephane Plaisance's interesting [work](https://github.com/Nucleomics-VIB/InSilico_PCR).
 
+
+
 <p align="center">
   <img src="Figures/MetONTIIME.png" alt="drawing" width="400" title="MetONTIIME_pipeline">
 </p>
