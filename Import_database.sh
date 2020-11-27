@@ -18,7 +18,7 @@
 
 DB_FASTA=$1
 
-conda create -n entrez_qiime_env python=2.7 gcc
+conda create -n entrez_qiime_env python=2.7 gcc_linux-64
 source activate entrez_qiime_env
 
 pip install numpy
