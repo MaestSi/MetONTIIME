@@ -52,13 +52,13 @@ lenfil_tol <- 300
 primers_length <- 25
 #min read quality value
 min_qual <- 7
-#Choose taxonomic classifier between Blast and Vsearch; set CLASSIFIER <- "Blast" for reproducing EPI2ME 16S workflow
+#Choose taxonomic classifier between Blast and Vsearch
 CLASSIFIER <- "Vsearch"
-#MAX_ACCEPTS is the maximum number of hits for each query; if a value > 1 is used, a consensus taxonomy for the MAX_ACCEPTS hits is retrieved; set MAX_ACCEPTS <- 3 for reproducing EPI2ME 16S workflow
+#MAX_ACCEPTS is the maximum number of hits for each query; if a value > 1 is used, a consensus taxonomy for the MAX_ACCEPTS hits is retrieved
 MAX_ACCEPTS <- 3
-#QUERY_COV is the minimum fraction of a query sequence that should be aligned to a sequence in the database; set QUERY_COV <- 0.3 for reproducing EPI2ME 16S workflow
+#QUERY_COV is the minimum fraction of a query sequence that should be aligned to a sequence in the database
 QUERY_COV <- 0.8
-#ID_THR is the minimum alignment identity threshold; set ID_THR <- 0.77 for reproducing EPI2ME 16S workflow
+#ID_THR is the minimum alignment identity threshold
 ID_THR <- 0.85
 ########################################################################################################
 #PIPELINE DIR
