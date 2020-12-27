@@ -109,7 +109,7 @@ Outputs (saved in \<fast5_dir\>\_analysis/preprocessing):
 
 **Evaluate_diversity_non_phylogenetic.sh**
 
-Usage: Evaluate_diversity_non_phylogenetic.sh -f \<feature_table\> -m \<sample_metadata\> -d \<sampling_depth\> -t \<threads\>
+Usage: Evaluate_diversity_non_phylogenetic.sh -f \<feature_table\> -m \<sample_metadata\> -d \<sampling_depth\>
 
 Note: can be run in background with nohup; the script reads a feature table collapsed at a desired taxonomic level (e.g. genus), subsamples the same number of reads for each sample and computes some alpha and beta non-pyhlogenetic diversity metrics.
 
