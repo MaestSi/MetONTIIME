@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-usage="$(basename "$0") [-f FEATURE_TABLE] [-m SAMPLE_METADATA] [-d SAMPLING_DEPTH] [-t THREADS]"
+usage="$(basename "$0") [-f FEATURE_TABLE] [-m SAMPLE_METADATA] [-d SAMPLING_DEPTH]"
 
 while :
 do
@@ -41,11 +41,6 @@ do
            SAMPLING_DEPTH=$2
            shift 2
            echo "Sampling depth: $SAMPLING_DEPTH reads"
-           ;;
-      -t)
-           THREADS=$2
-           shift 2
-           echo "Number of threads: $THREADS"
            ;;
        --) # End of all options
            shift
