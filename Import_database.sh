@@ -29,6 +29,11 @@ if [ ! -d "taxonomy" ]; then
   cd taxonomy
   wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz
   gunzip nucl_gb.accession2taxid.gz
+  wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_wgs.accession2taxid.gz
+  gunzip nucl_wgs.accession2taxid.gz
+  cp nucl_gb.accession2taxid nucl_merged.accession2taxid
+  tail -n+2 nucl_wgs.accession2taxid >> nucl_merged.accession2taxid
+  rm nucl_gb.accession2taxid nucl_wgs.accession2taxid
   mkdir taxdump
   cd taxdump
   wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
@@ -41,7 +46,7 @@ sed -i '/^[[:space:]]*$/d' $DB_FASTA
 if [ ! -d "entrez_qiime" ]; then
   git clone https://github.com/bakerccm/entrez_qiime.git
 fi
-python ./entrez_qiime/entrez_qiime.py -i $DB_FASTA -n ./taxonomy/taxdump -a ./taxonomy/nucl_gb.accession2taxid
+python ./entrez_qiime/entrez_qiime.py -i $DB_FASTA -n ./taxonomy/taxdump -a ./taxonomy/nucl_merged.accession2taxid
 conda deactivate
 
 source activate MetONTIIME_env
