@@ -193,10 +193,10 @@ source activate MetONTIIME_env
 qiime tools view <file.qz*>
 ```
 
-In particular, you should get an interactive taxonomy barplot, describing the composition of each sample at the desired taxonomic level.
+In particular, you could visualize an interactive multi-sample taxonomy barplot, describing the composition of each sample at the desired taxonomic level, and a PCA plot of Beta-diversity among samples.
 
 <p align="center">
-  <img src="Figures/BC04_taxa_barplot.png" alt="drawing" width="550" title="BC04_taxa_barplot">
+  <img src="Figures/MetONTIIME_results_example.png" alt="drawing" width="1000" title="MetONTIIME results example">
 </p>
 
 ## Citations
