@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Copyright 2020 Simone Maestri. All rights reserved.
+# Copyright 2021 Simone Maestri. All rights reserved.
 # Simone Maestri <simone.maestri@univr.it>
 #
 # This program is free software: you can redistribute it and/or modify
