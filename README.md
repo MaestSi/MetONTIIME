@@ -153,10 +153,10 @@ nohup ./MetONTIIME.sh <working_dir> <metadata file> <sequences qiime2 artifact> 
 ```
 where:
 ```
-<working_dir>: directory containing fastq.gz files
+<working_dir>: full path to directory containing fastq.gz files
 <metadata file>: full path to metadata file; if the file doesn't exist yet, it is created by the pipeline
-<sequences qiime2 artifact>: <file name>_sequence.qza QIIME2 artifact, may be created by Import_database.sh script
-<taxonomy qiime2 artifact>: <file name>_taxonomy.qza QIIME2 artifact, may be created by Import_database.sh script
+<sequences qiime2 artifact>: full path to <file name>_sequence.qza QIIME2 artifact, may be created by Import_database.sh script
+<taxonomy qiime2 artifact>: full path to <file name>_taxonomy.qza QIIME2 artifact, may be created by Import_database.sh script
 <threads>: maximum number of threads used
 <taxonomic classifier>: either Blast or Vsearch
 <max accepts>: maximum number of hits; if a value > 1 is used, a consensus taxonomy for the top hits is retrieved 
