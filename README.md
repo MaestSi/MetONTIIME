@@ -48,7 +48,7 @@ qiime tools import \
 
 qiime tools import \
 --type FeatureData[Taxonomy] \
---input-path  SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_all_levels.txt \
+--input-path  SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_7_levels.txt \
 --input-format HeaderlessTSVTaxonomyFormat \
 --output-path silva_132_99_16S_taxonomy.qza
 ```
