@@ -144,22 +144,22 @@ Outputs:
 
 ## Starting analysis from fastq.gz files
 
-In case you have already performed basecalling, demultiplexing, quality filtering, adapters and PCR primers trimming, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction:
+In case you have already performed basecalling, demultiplexing, quality filtering, adapters and PCR primers trimming, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction. All parameters are required with no default values.
 ```
 source activate MetONTIIME_env
-nohup ./MetONTIIME.sh <working_dir> <metadata file> <sequences qiime2 artifact> <taxonomy qiime2 artifact> <threads> <taxonomic classifier> <max accepts> <query coverage> <id thr> &
+nohup ./MetONTIIME.sh [-w working_dir] [-f metadata_file] [-s sequences_artifact] [-t taxonomy_artifact] [-n num_threads] [-c taxonomic_classifier] [-m max_accepts] [-q min_query_coverage] [-i min_id_thr] &
 ```
 where:
 ```
 <working_dir>: full path to directory containing fastq.gz files
-<metadata file>: full path to metadata file; if the file doesn't exist yet, it is created by the pipeline
-<sequences qiime2 artifact>: full path to <file name>_sequence.qza QIIME2 artifact, may be created by Import_database.sh script
-<taxonomy qiime2 artifact>: full path to <file name>_taxonomy.qza QIIME2 artifact, may be created by Import_database.sh script
-<threads>: maximum number of threads used
-<taxonomic classifier>: either Blast or Vsearch
-<max accepts>: maximum number of hits; if a value > 1 is used, a consensus taxonomy for the top hits is retrieved 
-<query coverage>: minimum of a query sequence that should be aligned to a sequence in the database [0-1]
-<id thr>: minimum alignment identity threshold [0-1]
+<metadata_file>: full path to metadata file; if the file doesn't exist yet, it is created by the pipeline
+<sequences_artifact>: full path to <file name>_sequence.qza QIIME2 artifact, may be created by Import_database.sh script
+<taxonomy_artifact>: full path to <file name>_taxonomy.qza QIIME2 artifact, may be created by Import_database.sh script
+<num_threads>: maximum number of threads used
+<taxonomic_classifier>: either Blast or Vsearch
+<max_accepts>: maximum number of hits; if a value > 1 is used, a consensus taxonomy for the top hits is retrieved 
+<min_query_coverage>: minimum portion of a query sequence that should be aligned to a sequence in the database [0-1]
+<min_id_thr>: minimum alignment identity threshold [0-1]
 ```
 
 ## Auxiliary scripts
