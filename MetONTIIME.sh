@@ -18,15 +18,66 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-WORKING_DIR=$1
-SAMPLE_METADATA=$2
-DB=$3
-TAXONOMY=$4
-THREADS=$5
-CLASSIFIER=$6
-MAX_ACCEPTS=$7
-QUERY_COV=$8
-ID_THR=$9
+
+usage="$(basename "$0") [-w working_dir] [-f metadata_file] [-s sequences_artifact] [-t taxonomy_artifact] [-n num_threads] [-c taxonomic_classifier] [-m max_accepts] [-q min_query_coverage] [-i min_id_thr]"
+
+while :
+do
+    case "$1" in
+      -h | --help)
+          echo $usage
+          exit 0
+          ;;
+      -w)
+          WORKING_DIR=$(realpath $2)
+          shift 2
+          ;;
+      -f)
+           SAMPLE_METADATA=$2
+           shift 2
+           ;;
+      -s)
+           DB=$(realpath $2)
+           shift 2
+           ;;
+      -t)
+           TAXONOMY=$(realpath $2)
+           shift 2
+           ;;
+      -n)
+           THREADS=$2
+           shift 2
+           ;;
+      -c)
+           CLASSIFIER=$2
+           shift 2
+           ;;
+      -m)
+           MAX_ACCEPTS=$2
+           shift 2
+           ;;
+      -q)
+           QUERY_COV=$2
+           shift 2
+           ;;
+      -i)
+           ID_THR=$2
+           shift 2
+           ;;
+       --) # End of all options
+           shift
+           break
+           ;;
+       -*)
+           echo "Error: Unknown option: $1" >&2
+           ## or call function display_help
+           exit 1
+           ;;
+        *) # No more options
+           break
+           ;;
+    esac
+done
 
 FASTQ_FILES=$(realpath $(find $WORKING_DIR -maxdepth 1 | grep "\.fastq\.gz"))
 MANIFEST=$WORKING_DIR"/manifest.txt"

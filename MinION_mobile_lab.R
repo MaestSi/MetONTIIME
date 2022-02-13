@@ -335,7 +335,7 @@ cat(text = paste0("Running the MetONTIIME pipeline"), sep = "\n")
 cat(text = "\n", file = logfile, append = TRUE)
 cat(text = "\n")
 
-system(paste0(MetONTIIME, " ", d3, " ", SAMPLE_METADATA, " ", DB, " ", TAXONOMY, " ", num_threads, " ", CLASSIFIER, " ", MAX_ACCEPTS, " ", QUERY_COV, " ", ID_THR))
+system(paste0(MetONTIIME, " -w ", d3, " -f ", SAMPLE_METADATA, " -s ", DB, " -t ", TAXONOMY, " -n ", num_threads, " -c ", CLASSIFIER, " -m ", MAX_ACCEPTS, " -q ", QUERY_COV, " -i ", ID_THR))
 
 cat(text = paste0("Workflow ended at ", date(), "!"), file = logfile, sep = "\n", append = TRUE)  
 cat(text = paste0("Workflow ended at ", date(), "!"), sep = "\n")
