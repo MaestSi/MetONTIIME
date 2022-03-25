@@ -62,6 +62,12 @@ chmod 755 *
 ./install.sh
 ```
 
+Otherwise, you can download a docker image with:
+
+```
+docker pull maestsi/metontiime:latest
+```
+
 A conda environment named _MetONTIIME_env_ is created, where seqtk, pycoQC, NanoFilt and qiime2-2021.8 are installed.
 Then, you can open the **config_MinION_mobile_lab.R** file with a text editor and set the variables _PIPELINE_DIR_ and _MINICONDA_DIR_ to the value suggested by the installation step.
 
