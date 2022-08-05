@@ -1,5 +1,5 @@
 #
-# Copyright 2021 Simone Maestri. All rights reserved.
+# Copyright 2022 Simone Maestri. All rights reserved.
 # Simone Maestri <simone.maestri@univr.it>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -32,10 +32,12 @@ barcode_kits <- c("SQK-RAB204")
 kit <- "SQK-RAB204"
 #flowcell chemistry (R9.4/R9.5 chemistry)
 flowcell <- "FLO-MIN106"
-#fast_basecalling_flag <- 1 if you want to use the fast basecalling algorithm (FLO-MIN106 only); otherwise set fast_basecalling_flag <- 0 if you want to use the accurate but slow one
-fast_basecalling_flag <- 1
-#pair_strands_flag <- 1 if, in case a 1d2 kit and FLO-MIN107 flow-cell have been used, you want to perform 1d2 basecalling; otherwise set pair_strands_flag <- 0
-pair_strands_flag <- 0
+#conf_basecalling_flag <- 1 if you want to specify a configuration file for base-calling (and additional parameters) insted of choosing the default by specifying kit and flowcell
+conf_basecalling_flag <- 0
+#conf_par_basecalling is the name of the config file (and additional parameters, such as the device for GPU-accelerated basecalling) in case config_basecalling_flag <- 1
+conf_par_basecalling <- "-c dna_r10.4_e8.1_hac.cfg --device 'auto' --gpu_runners_per_device 1"
+#if skip_demultiplexing_flag <- 1 demultiplexing is skipped; otherwise set skip_demultiplexing_flag <- 0
+skip_demultiplexing_flag <- 0
 #require_two_barcodes_flag <- 1 if you want to keep only reads with a barcode (tag) at both ends of the read; otherwise set require_two_barcodes_flag <- 0
 require_two_barcodes_flag <- 0
 #save_space_flag <- 1 if you want temporary files to be automatically deleted; otherwise set save_space_flag <- 0
@@ -51,7 +53,7 @@ lenfil_tol <- 300
 #set primers length [bp]; if the kit you used already contains PCR primers as part of the adapters, you can set this value to 0
 primers_length <- 25
 #min read quality value
-min_qual <- 7
+min_qual <- 9
 #Choose taxonomic classifier between Blast and Vsearch
 CLASSIFIER <- "Vsearch"
 #MAX_ACCEPTS is the maximum number of hits for each query; if a value > 1 is used, a consensus taxonomy for the MAX_ACCEPTS hits is retrieved
@@ -59,7 +61,7 @@ MAX_ACCEPTS <- 3
 #QUERY_COV is the minimum fraction of a query sequence that should be aligned to a sequence in the database
 QUERY_COV <- 0.8
 #ID_THR is the minimum alignment identity threshold
-ID_THR <- 0.85
+ID_THR <- 0.90
 ########################################################################################################
 #PIPELINE DIR
 PIPELINE_DIR <- "/path/to/MetONTIIME"
