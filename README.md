@@ -153,7 +153,7 @@ Outputs:
 In case you have already performed basecalling, demultiplexing, quality filtering, adapters and PCR primers trimming, and already have BC\<num\>.fastq.gz files, you could run the pipeline using the following instruction. All parameters are required with no default values.
 ```
 source activate MetONTIIME_env
-nohup ./MetONTIIME.sh [-w working_dir] [-f metadata_file] [-s sequences_artifact] [-t taxonomy_artifact] [-n num_threads] [-c taxonomic_classifier] [-m max_accepts] [-q min_query_coverage] [-i min_id_thr] &
+nohup ./MetONTIIME.sh -w <working_dir> -f <metadata_file> -s <sequences_artifact> -t <taxonomy_artifact> -n <num_threads> -c <taxonomic_classifier> -m <max_accepts> -q <min_query_coverage> -i <min_id_thr> &
 ```
 where:
 ```
