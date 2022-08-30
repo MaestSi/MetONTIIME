@@ -144,7 +144,8 @@ if [ "$CLASSIFIER_UC" == "BLAST" ]; then
   --p-perc-identity $ID_THR \
   --p-query-cov $QUERY_COV \
   --p-maxaccepts $MAX_ACCEPTS \
-  --o-classification taxonomy.qza
+  --o-classification taxonomy.qza \
+  --o-search-results search_results.qza
 elif [ "$CLASSIFIER_UC" == "VSEARCH" ]; then
   qiime feature-classifier classify-consensus-vsearch \
     --i-query rep-seqs.qza  \
@@ -158,7 +159,8 @@ elif [ "$CLASSIFIER_UC" == "VSEARCH" ]; then
     --p-strand 'both' \
     --p-unassignable-label 'Unassigned' \
     --p-threads $THREADS \
-    --o-classification taxonomy.qza
+    --o-classification taxonomy.qza \
+    --o-search-results search_results.qza
 else
   echo "Classifier $CLASSIFIER is not supported (choose between Blast and Vsearch); running default classifier Blast"
   qiime feature-classifier classify-consensus-blast \
@@ -168,7 +170,8 @@ else
   --p-perc-identity $ID_THR \
   --p-query-cov $QUERY_COV \
   --p-maxaccepts $MAX_ACCEPTS \
-  --o-classification taxonomy.qza
+  --o-classification taxonomy.qza \
+  --o-search-results search_results.qza
 fi
 
 qiime metadata tabulate \
