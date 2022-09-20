@@ -42,12 +42,12 @@ unzip Silva_132_release.zip
 source activate MetONTIIME_env
 
 qiime tools import \
---type FeatureData[Sequence] \
+--type 'FeatureData[Sequence]' \
 --input-path SILVA_132_QIIME_release/rep_set/rep_set_16S_only/99/silva_132_99_16S.fna \
 --output-path silva_132_99_16S_sequence.qza
 
 qiime tools import \
---type FeatureData[Taxonomy] \
+--type 'FeatureData[Taxonomy]' \
 --input-path  SILVA_132_QIIME_release/taxonomy/16S_only/99/taxonomy_7_levels.txt \
 --input-format HeaderlessTSVTaxonomyFormat \
 --output-path silva_132_99_16S_taxonomy.qza
