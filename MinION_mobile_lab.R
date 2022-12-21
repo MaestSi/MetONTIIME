@@ -244,11 +244,7 @@ if (!dir.exists(d2_preprocessing)) {
     if (skip_demultiplexing_flag == 1) {
       system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -o ", d2, "/qc/pycoQC_report.html --min_pass_qual ", min_qual))
     } else {
-      if (pair_strands_flag_cpu == 1) {
-        system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -b ", d2_preprocessing, "/barcoding_summary.txt -o ", d2, "/qc/pycoQC_report.html  --min_pass_qual ", min_qual))
-      } else {
         system(paste0(PYCOQC, " -f ", d2_basecalling, "/sequencing_summary.txt -b ", d2_preprocessing, "/barcoding_summary.txt -o ", d2, "/qc/pycoQC_report.html --min_pass_qual ", min_qual))
-      }
     }
   }
   
