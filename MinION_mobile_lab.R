@@ -206,9 +206,9 @@ if (!dir.exists(d2_preprocessing)) {
     cat(text = paste0("Demultiplexing and PCR primers trimming started at ", date()), file = logfile, sep = "\n", append = TRUE)
     cat(text = paste0("Demultiplexing and PCR primers trimming started at ", date()), sep = "\n")
     if (require_two_barcodes_flag == 1) {
-      system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --require_barcodes_both_ends --num_extra_bases_trim ", primers_length, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
+      system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --enable_trim_barcodes --require_barcodes_both_ends --num_extra_bases_trim ", primers_length, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
     } else {
-      system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --num_extra_bases_trim ", primers_length, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
+      system(paste0(demultiplexer, " -r -i ", d2_basecalling, " -t ", num_threads, " -s ", d2_preprocessing, " --enable_trim_barcodes --num_extra_bases_trim ", primers_length, " --barcode_kits \"", paste0(barcode_kits, collapse = " "), "\""))
     }
     cat(text = paste0("Demultiplexing and PCR primers trimming finished at ", date()), file = logfile, sep = "\n", append = TRUE)
     cat(text = paste0("Demultiplexing and PCR primers trimming finished at ", date()), sep = "\n")
