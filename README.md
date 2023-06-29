@@ -67,7 +67,7 @@ In case you downloaded a fasta file from NCBI and you want to obtain the corresp
 For example, if you want to use the same database used by the EPI2ME 16S workflow for bacterial 16S gene, you can go to [BioProject 33175](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D), click _send to_, select _Complete Record_ and _File_, set the _Format_ to _FASTA_ and then click _Create File_; the corresponding taxonomyTsv file can then be created with:
 
 ```
-Rscripts /path/to/TaxonomyTsv_from_fastaNCBI.R \
+Rscript /path/to/TaxonomyTsv_from_fastaNCBI.R \
 dbSequencesFasta="/path/to/input/dbSequences.fasta" \
 dbTaxonomyTsv="./path/to/output//dbTaxonomy.tsv"
 ```
