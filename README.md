@@ -56,7 +56,7 @@ qiime tools import \
 **Installation**
 
 ```
-git clone https://github.com/MaestSi/MetONTIIME.git
+git clone --branch v1 https://github.com/MaestSi/MetONTIIME.git
 cd MetONTIIME
 chmod 755 *
 ./install.sh
@@ -65,7 +65,7 @@ chmod 755 *
 Otherwise, you can download a docker image with:
 
 ```
-docker pull maestsi/metontiime:latest
+docker pull maestsi/metontiime:v1
 ```
 
 A conda environment named _MetONTIIME_env_ is created, where seqtk, pycoQC, NanoFilt and qiime2-2022.8 are installed.
