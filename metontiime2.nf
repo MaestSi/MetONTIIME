@@ -22,8 +22,8 @@ def helpMessage() {
 	--sampleMetadata                                        Path to sample metadata tsv file; if it doesn't exist yet, it is created at runtime
 	--dbSequencesFasta                                      Path to database file with sequences in fasta format
 	--dbTaxonomyTsv                                         Path to database file with sequence id-to-taxonomy correspondence in tsv format
-	--dbSequencesQza                                        Database file name with sequences as QIIME2 artifact (qza)
-	--dbTaxonomyQza                                         Database file name with sequence id-to-taxonomy correspondence as QIIME2 artifact (qza)
+	--dbSequencesQza                                        Path to database file with sequences as QIIME2 artifact (qza)
+	--dbTaxonomyQza                                         Path to database file with sequence id-to-taxonomy correspondence as QIIME2 artifact (qza)
 	--classifier                                            Taxonomy classifier, available: VSEARCH, Blast
 	--numThreads                                            Number of threads
 	--maxNumReads                                           Maximum number of reads per sample; if one sample has more than maxNumReads, random downsampling is performed
@@ -323,6 +323,7 @@ process collapseTables {
 	input:
 	val 'flag_taxa'
 	output:
+	val 'flag_collapse'
 	script:
     if(params.collapseTables)
 	"""
@@ -509,6 +510,7 @@ process taxonomyVisualization {
 process diversityAnalyses {
 	input:
 	val 'flag_taxa'
+	val 'flag_collapse'
 	output:
 	script:
     if(params.diversityAnalyses && params.filterTaxa)
@@ -601,5 +603,5 @@ workflow {
 	taxonomyVisualization(filterTaxa.out)
 	collapseTables(assignTaxonomy.out)
 	dataQC(importFastq.out)
-	diversityAnalyses(filterTaxa.out)
+	diversityAnalyses(filterTaxa.out, collapseTables.out)
 }
