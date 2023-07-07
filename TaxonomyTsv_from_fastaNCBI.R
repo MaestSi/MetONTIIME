@@ -60,7 +60,6 @@ for (i in 1:length(chunks_list)) {
       suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
     })
   } else {
-    cat("Converting GenBankID to NCBI taxonomy UID\n")
     NCBI_taxa_uids_tmp_curr <- tryCatch({
       suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
     }, warning = function(w) {
