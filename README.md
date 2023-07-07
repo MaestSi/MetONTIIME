@@ -73,7 +73,7 @@ dbTaxonomyTsv="./path/to/output//dbTaxonomy.tsv" \
 ENTREZ_KEY="myentrezkey"
 ```
 
-The optional ENTREZ_KEY argument allows speeding up the analysis. You can get your own ENTREZ_KEY following the instructions reported [here](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
+The optional ENTREZ_KEY argument allows speeding up data retrieval from NCBI. You can get your own ENTREZ_KEY following the instructions reported [here](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
 
 ## Output explanation
 
