@@ -31,8 +31,49 @@ sequences <- readDNAStringSet(dbSequencesFasta)
 cat(sprintf("Imported %d fasta sequences\n", length(sequences)))
 
 genbank_ids <- gsub(x = names(sequences), pattern = " .*", replacement = "")
-cat("Converting GenBankID to NCBI taxonomy UID\n")
-NCBI_taxa_uids_tmp <- suppressMessages(genbank2uid(id = genbank_ids))
+
+num_uids_chunk <- 100
+#process NBCI taxonomy UID in chunks
+if (length(genbank_ids) < num_uids_chunk) {
+  chunks_list <- list(1:length(genbank_ids))
+} else {
+  chunks_list <- split(1:length(genbank_ids), ceiling(seq(from = 1, to = length(genbank_ids))/num_uids_chunk))
+}
+
+if (exists("ENTREZ_KEY")) {
+  cat("Converting GenBankID to NCBI taxonomy UID using the provided ENTREZ_KEY\n")
+} else {
+  cat("Converting GenBankID to NCBI taxonomy UID\n")
+}
+
+NCBI_taxa_uids_tmp <- c()
+for (i in 1:length(chunks_list)) {
+  cat(sprintf("Processing GenBankID chunk %d out of %d (%.2f%%)\n", i, length(chunks_list), i*100/length(chunks_list)))
+  if (exists("ENTREZ_KEY")) {
+    NCBI_taxa_uids_tmp_curr <- tryCatch({
+      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
+    }, warning = function(w) {
+      print("Failed conversion, retrying current chunk")
+      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
+    }, error = function(e) {
+      print("Failed conversion, retrying current chunk")
+      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
+    })
+  } else {
+    cat("Converting GenBankID to NCBI taxonomy UID\n")
+    NCBI_taxa_uids_tmp_curr <- tryCatch({
+      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
+    }, warning = function(w) {
+      print("Failed conversion, retrying current chunk")
+      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
+    }, error = function(e) {
+      print("Failed conversion, retrying current chunk")
+      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
+    })
+  }
+  NCBI_taxa_uids_tmp <- c(NCBI_taxa_uids_tmp, NCBI_taxa_uids_tmp_curr)
+}
+
 NCBI_taxa_uids <- unlist(lapply(NCBI_taxa_uids_tmp, '[[', 1))
 ind_fail <- which(is.na(NCBI_taxa_uids))
 ind_ok <- which(!is.na(NCBI_taxa_uids))
@@ -44,19 +85,38 @@ NCBI_taxa_uids <- NCBI_taxa_uids[ind_ok]
 NCBI_taxa_name_ok <- names(sequences)[ind_ok]
 NCBI_taxa_name_fail <- names(sequences)[ind_fail]
 
-cat("Retrieving taxonomy from NCBI taxonomy UID\n")
-raw_classification <- tryCatch({
-  raw_classification <- suppressMessages(classification(NCBI_taxa_uids, db = 'ncbi'))
-  return(raw_classification)
-}, warning = function(w) {
-  print("Failed classification, retrying")
-  raw_classification <- suppressMessages(classification(NCBI_taxa_uids, db = 'ncbi'))
-  return(raw_classification)
-}, error = function(e) {
-  print("Failed classification, retrying")
-  raw_classification <- suppressMessages(classification(NCBI_taxa_uids, db = 'ncbi'))
-  return(raw_classification)
-})
+if (exists("ENTREZ_KEY")) {
+  cat("Retrieving taxonomy from NCBI taxonomy UID using the provided ENTREZ_KEY\n")
+} else {
+  cat("Retrieving taxonomy from NCBI taxonomy UID\n")
+}
+
+raw_classification <- c()
+for (i in 1:length(chunks_list)) {
+  cat(sprintf("Processing NCBI taxonomy UID chunk %d out of %d (%.2f%%)\n", i, length(chunks_list), i*100/length(chunks_list)))
+  if (exists("ENTREZ_KEY")) {
+    raw_classification_curr <- tryCatch({
+      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY))
+    }, warning = function(w) {
+      print("Failed classification, retrying current chunk")
+      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY))
+    }, error = function(e) {
+      print("Failed classification, retrying current chunk")
+      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY))
+    })
+  } else {
+    raw_classification_curr <- tryCatch({
+      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi'))
+    }, warning = function(w) {
+      print("Failed classification, retrying current chunk")
+      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi'))
+    }, error = function(e) {
+      print("Failed classification, retrying current chunk")
+      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi'))
+    })
+  }
+  raw_classification <- c(raw_classification, raw_classification_curr)
+}
 
 cat("Reformatting taxonomy\n")
 full_taxonomy <- c()
@@ -77,7 +137,7 @@ for (i in 1:length(raw_classification)) {
       full_taxonomy[i] <- paste(kingdom_name_curr, phylum_name_curr, class_name_curr, order_name_curr, family_name_curr, genus_name_curr, species_name_curr, subspecies_name_curr, sep = ";")
     } else {
       full_taxonomy[i] <- "Unclassified;;;;;;;"
-      }
+    }
   } else {
     full_taxonomy[i] <- "Unclassified;;;;;;;"
   }
