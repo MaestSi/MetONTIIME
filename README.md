@@ -42,7 +42,6 @@ Other mandatory arguments which may be specified in the metontiime2.conf file
 --dbSequencesQza                                        Database file name with sequences as QIIME2 artifact (qza)
 --dbTaxonomyQza                                         Database file name with sequence id-to-taxonomy correspondence as QIIME2 artifact (qza)
 --classifier                                            Taxonomy classifier, available: VSEARCH, Blast
---numThreads                                            Number of threads
 --maxNumReads                                           Maximum number of reads per sample; if one sample has more than maxNumReads, random downsampling is performed
 --minReadLength                                         Minimum length (bp) for a read to be retained
 --maxReadLength                                         Maximum length (bp) for a read to be retained
