@@ -25,7 +25,6 @@ def helpMessage() {
 	--dbSequencesQza                                        Database file name with sequences as QIIME2 artifact (qza)
 	--dbTaxonomyQza                                         Database file name with sequence id-to-taxonomy correspondence as QIIME2 artifact (qza)
 	--classifier                                            Taxonomy classifier, available: VSEARCH, Blast
-	--numThreads                                            Number of threads
 	--maxNumReads                                           Maximum number of reads per sample; if one sample has more than maxNumReads, random downsampling is performed
 	--minReadLength                                         Minimum length (bp) for a read to be retained
 	--maxReadLength                                         Maximum length (bp) for a read to be retained
@@ -240,7 +239,7 @@ process derepSeq {
 		--p-perc-identity ${params.clusteringIdentity} \
 		--o-clustered-table ${params.resultsDir}/derepSeq/table.qza \
 		--o-clustered-sequences ${params.resultsDir}/derepSeq/rep-seqs.qza \
-		--p-threads ${params.numThreads}
+		--p-threads ${task.cpus}
 
 		rm ${params.resultsDir}/derepSeq/table_tmp.qza ${params.resultsDir}/derepSeq/rep-seqs_tmp.qza
 
@@ -295,7 +294,7 @@ process assignTaxonomy {
     		--p-maxhits ${params.maxAccepts} \
     		--p-strand 'both' \
     		--p-unassignable-label 'Unassigned' \
-    		--p-threads ${params.numThreads} \
+    		--p-threads ${task.cpus} \
     		--o-classification ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
     		--o-search-results ${params.resultsDir}/assignTaxonomy/search_results.qza
     	else
