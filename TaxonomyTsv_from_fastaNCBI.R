@@ -32,6 +32,7 @@ cat(sprintf("Imported %d fasta sequences\n", length(sequences)))
 
 genbank_ids <- gsub(x = names(sequences), pattern = " .*", replacement = "")
 
+max_attempts <- 10
 num_uids_chunk <- 100
 #process NBCI taxonomy UID in chunks
 if (length(genbank_ids) < num_uids_chunk) {
@@ -50,25 +51,21 @@ NCBI_taxa_uids_tmp <- c()
 for (i in 1:length(chunks_list)) {
   cat(sprintf("Processing GenBankID chunk %d out of %d (%.2f%%)\n", i, length(chunks_list), i*100/length(chunks_list)))
   if (exists("ENTREZ_KEY")) {
-    NCBI_taxa_uids_tmp_curr <- tryCatch({
-      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
-    }, warning = function(w) {
-      print("Failed conversion, retrying current chunk")
-      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
-    }, error = function(e) {
-      print("Failed conversion, retrying current chunk")
-      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY))
-    })
+    NCBI_taxa_uids_tmp_curr <- NULL
+    attempt <- 1
+    while(length(which(!is.na(NCBI_taxa_uids_tmp_curr))) != lapply(chunks_list, length)[[i]] && attempt <= max_attempts) {
+      NCBI_taxa_uids_tmp_curr <- try(suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]], key = ENTREZ_KEY)))
+      if (attempt > 1) cat(sprintf("Running attempt %d\n", attempt))
+      attempt <- attempt + 1
+    } 
   } else {
-    NCBI_taxa_uids_tmp_curr <- tryCatch({
-      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
-    }, warning = function(w) {
-      print("Failed conversion, retrying current chunk")
-      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
-    }, error = function(e) {
-      print("Failed conversion, retrying current chunk")
-      suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]]))
-    })
+    NCBI_taxa_uids_tmp_curr <- NULL
+    attempt <- 1
+    while(length(which(!is.na(NCBI_taxa_uids_tmp_curr))) != lapply(chunks_list, length)[[i]] && attempt <= max_attempts) {
+      NCBI_taxa_uids_tmp_curr <- try(suppressMessages(genbank2uid(id = genbank_ids[chunks_list[[i]]])))
+      if (attempt > 1) cat(sprintf("Running attempt %d\n", attempt))
+      attempt <- attempt + 1
+    }
   }
   NCBI_taxa_uids_tmp <- c(NCBI_taxa_uids_tmp, NCBI_taxa_uids_tmp_curr)
 }
@@ -94,25 +91,21 @@ raw_classification <- c()
 for (i in 1:length(chunks_list)) {
   cat(sprintf("Processing NCBI taxonomy UID chunk %d out of %d (%.2f%%)\n", i, length(chunks_list), i*100/length(chunks_list)))
   if (exists("ENTREZ_KEY")) {
-    raw_classification_curr <- tryCatch({
-      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY))
-    }, warning = function(w) {
-      print("Failed classification, retrying current chunk")
-      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY))
-    }, error = function(e) {
-      print("Failed classification, retrying current chunk")
-      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY))
-    })
+    raw_classification_curr <- NULL
+    attempt <- 1
+    while(length(which(!is.na(raw_classification_curr))) != lapply(chunks_list, length)[[i]] && attempt <= max_attempts) {
+      raw_classification_curr <- try(suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi', key = ENTREZ_KEY)))
+      if (attempt > 1) cat(sprintf("Running attempt %d\n", attempt))
+      attempt <- attempt + 1
+    } 
   } else {
-    raw_classification_curr <- tryCatch({
-      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi'))
-    }, warning = function(w) {
-      print("Failed classification, retrying current chunk")
-      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi'))
-    }, error = function(e) {
-      print("Failed classification, retrying current chunk")
-      suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi'))
-    })
+    raw_classification_curr <- NULL
+    attempt <- 1
+    while(length(which(!is.na(raw_classification_curr))) != lapply(chunks_list, length)[[i]] && attempt <= max_attempts) {
+      raw_classification_curr <- try(suppressMessages(classification(NCBI_taxa_uids[chunks_list[[i]]], db = 'ncbi')))
+      if (attempt > 1)  cat(sprintf("Running attempt %d\n", attempt))
+      attempt <- attempt + 1
+    }
   }
   raw_classification <- c(raw_classification, raw_classification_curr)
 }
