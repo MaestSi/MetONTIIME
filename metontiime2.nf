@@ -526,7 +526,7 @@ process diversityAnalyses {
   		--o-shannon-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
   		--o-evenness-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
   		--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
-  		--o-bray-curtis-distance-matrix bray-curtis-distance-matrix.qza \
+  		--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
   		--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
   		--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
   		--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
@@ -561,7 +561,7 @@ process diversityAnalyses {
   		--o-shannon-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
   		--o-evenness-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
   		--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
-  		--o-bray-curtis-distance-matrix bray-curtis-distance-matrix.qza \
+  		--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
   		--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
   		--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
   		--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
