@@ -517,20 +517,24 @@ process diversityAnalyses {
 		mkdir -p ${params.resultsDir}/diversityAnalyses
 		mkdir -p ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}
 
-		qiime diversity core-metrics \
-  		--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
-  		--p-sampling-depth ${params.numReadsDiversity} \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-rarefied-table ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
-  		--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
-  		--o-shannon-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
-  		--o-evenness-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
-  		--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
-  		--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
-  		--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
-  		--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
-  		--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
-  		--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv
+		num_samples=\$(echo \$(cat ${params.sampleMetadata} | wc -l) -1 | bc)
+
+		if [ "\$num_samples" -gt 1 ]; then
+			qiime diversity core-metrics \
+  			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
+  			--p-sampling-depth ${params.numReadsDiversity} \
+  			--m-metadata-file ${params.sampleMetadata} \
+  			--o-rarefied-table ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
+  			--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
+  			--o-shannon-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
+  			--o-evenness-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
+  			--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
+  			--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
+  			--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
+  			--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
+  			--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
+  			--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv;
+		fi
 
 		for f in \$(find ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity} | grep \"qza\" | grep -v \"distance-matrix\"); do
 
@@ -551,21 +555,25 @@ process diversityAnalyses {
 	"""
 		mkdir -p ${params.resultsDir}/diversityAnalyses
 		mkdir -p ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}
-		
-		qiime diversity core-metrics \
-  		--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
-  		--p-sampling-depth ${params.numReadsDiversity} \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-rarefied-table ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
-  		--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
-  		--o-shannon-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
-  		--o-evenness-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
-  		--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
-  		--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
-  		--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
-  		--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
-  		--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
-  		--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv
+
+		num_samples=\$(echo \$(cat ${params.sampleMetadata} | wc -l) -1 | bc)
+
+		if [ "\$num_samples" -gt 1 ]; then
+			qiime diversity core-metrics \
+  			--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
+  			--p-sampling-depth ${params.numReadsDiversity} \
+  			--m-metadata-file ${params.sampleMetadata} \
+  			--o-rarefied-table ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
+  			--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
+  			--o-shannon-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
+  			--o-evenness-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
+  			--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
+  			--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
+  			--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
+  			--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
+  			--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
+  			--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv;
+  		fi
 
 		for f in \$(find ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity} | grep \"\\.qza\" | grep -v \"distance-matrix\"); do
   			
