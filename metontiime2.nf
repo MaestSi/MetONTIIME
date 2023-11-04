@@ -121,6 +121,7 @@ process filterFastq {
 		for f in \$fq; do 
 			sn=\$(echo \$(basename \$f) | sed \'s/\\.fastq.*//\');
 			zless \$f | NanoFilt -q ${params.minQual} -l ${params.minReadLength} --maxlength ${params.maxReadLength} | seqtk trimfq -b ${params.extraEndsTrim} -e ${params.extraEndsTrim} - | gzip > ${params.resultsDir}/filterFastq/\$sn.fastq.gz;
+			if LC_ALL=C gzip -l ${params.resultsDir}/filterFastq/\$sn.fastq.gz | awk \'NR==2 {exit(\$2!=0)}\'; then rm ${params.resultsDir}/filterFastq/\$sn.fastq.gz; fi
 		done
 	"""
 	else
@@ -168,19 +169,19 @@ process importFastq {
 		manifestFile=${params.resultsDir}/importFastq/manifest.txt
 
 		if [ ! -f "\$manifestFile" ]; then
-  			echo -e sample-id\"\t\"absolute-filepath > \$manifestFile;
-  			for f in \$fq; do
-    			s=\$(echo \$(basename \$f) | sed \'s/\\.fastq\\.gz//g\');
-    			echo -e \$s\"\t\"\$f >> \$manifestFile;
-  			done
+			echo -e sample-id\"\t\"absolute-filepath > \$manifestFile;
+			for f in \$fq; do
+			s=\$(echo \$(basename \$f) | sed \'s/\\.fastq\\.gz//g\');
+			echo -e \$s\"\t\"\$f >> \$manifestFile;
+			done
 		fi
 
 		if [ ! -f ${params.sampleMetadata} ]; then
-  			echo -e sample-id\"\t\"sample-name > ${params.sampleMetadata};
-  			for f in \$fq; do
-    			s=\$(echo \$(basename \$f) | sed \'s/\\.fastq\\.gz//g\');
-    			echo -e \$s\"\t\"\$s >> ${params.sampleMetadata};
-  			done
+			echo -e sample-id\"\t\"sample-name > ${params.sampleMetadata};
+			for f in \$fq; do
+			s=\$(echo \$(basename \$f) | sed \'s/\\.fastq\\.gz//g\');
+			echo -e \$s\"\t\"\$s >> ${params.sampleMetadata};
+			done
 		fi
 
 		qiime tools import \
