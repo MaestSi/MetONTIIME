@@ -4,7 +4,7 @@ FROM continuumio/miniconda3
 ENV DEBIAN_FRONTEND noninteractive
 
 ######### dependencies
-RUN apt-get update -qq \
+RUN apt-get -y update -qq \
     && apt-get install -y \
     build-essential \
     wget \
@@ -21,11 +21,12 @@ RUN apt-get update -qq \
 ############################################################ install MetONTIIME
 WORKDIR /home/
 
-RUN wget https://data.qiime2.org/distro/core/qiime2-2023.5-py38-linux-conda.yml
-RUN conda env create -n MetONTIIME_env --file qiime2-2023.5-py38-linux-conda.yml
-RUN rm qiime2-2023.5-py38-linux-conda.yml
+RUN wget https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2023.9-py38-linux-conda.yml
+RUN conda env create -n MetONTIIME_env --file qiime2-amplicon-2023.9-py38-linux-conda.yml
+RUN rm qiime2-amplicon-2023.9-py38-linux-conda.yml
 
-RUN conda install -n MetONTIIME_env -c bioconda seqtk NanoFilt
+RUN conda install -n MetONTIIME_env -c bioconda seqtk
+RUN /opt/conda/envs/MetONTIIME_env/bin/python -m pip install nanofilt
 
 ENV PATH /opt/conda/envs/MetONTIIME_env/bin:$PATH
 ENV CONDA_PREFIX /opt/conda/envs/MetONTIIME_env

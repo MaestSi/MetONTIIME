@@ -32,6 +32,7 @@ def helpMessage() {
 	--extraEndsTrim                                         Number of bases to be trimmed at both ends
 	--clusteringIdentity                                    Identity for de novo clustering [0-1]
 	--maxAccepts                                            Maximum number of candidate hits for each read, to be used for consensus taxonomy assignment
+	--minConsensus                                          Minimum fraction of assignments must match top hit to be accepted as consensus assignment [0.5-1]
 	--minQueryCoverage                                      Minimum query coverage for an alignment to be considered a candidate hit [0-1]
 	--minIdentity                                           Minimum alignment identity for an alignment to be considered a candidate hit [0-1]
 	--taxaLevelDiversity                                    Taxonomy level at which you want to perform non phylogeny-based diversity analyses
@@ -245,13 +246,13 @@ process derepSeq {
 		rm ${params.resultsDir}/derepSeq/table_tmp.qza ${params.resultsDir}/derepSeq/rep-seqs_tmp.qza
 
 		qiime feature-table summarize \
-  		--i-table ${params.resultsDir}/derepSeq/table.qza \
-  		--o-visualization ${params.resultsDir}/derepSeq/table.qzv \
-  		--m-sample-metadata-file ${params.sampleMetadata}
+		--i-table ${params.resultsDir}/derepSeq/table.qza \
+		--o-visualization ${params.resultsDir}/derepSeq/table.qzv \
+		--m-sample-metadata-file ${params.sampleMetadata}
 
 		qiime feature-table tabulate-seqs \
-  		--i-data ${params.resultsDir}/derepSeq/rep-seqs.qza \
-  		--o-visualization ${params.resultsDir}/derepSeq/rep-seqs.qzv
+		--i-data ${params.resultsDir}/derepSeq/rep-seqs.qza \
+		--o-visualization ${params.resultsDir}/derepSeq/rep-seqs.qzv
 	"""
 	else
 	"""
@@ -274,43 +275,50 @@ process assignTaxonomy {
 		classifier_uc=\$(awk '{print toupper(\$0)'} <<< ${params.classifier})
 
 		if [ "\$classifier_uc" == "BLAST" ]; then
-  			qiime feature-classifier classify-consensus-blast \
-  			--i-query ${params.resultsDir}/derepSeq/rep-seqs.qza  \
-  			--i-reference-reads ${params.resultsDir}/importDb/${params.dbSequencesQza} \
-  			--i-reference-taxonomy ${params.resultsDir}/importDb/${params.dbTaxonomyQza} \
-  			--p-perc-identity ${params.minIdentity} \
-  			--p-query-cov ${params.minQueryCoverage} \
-  			--p-maxaccepts ${params.maxAccepts} \
-  			--o-classification ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  			--o-search-results ${params.resultsDir}/assignTaxonomy/search_results.qza
+			qiime feature-classifier makeblastdb \
+			--i-sequences ${params.resultsDir}/importDb/${params.dbSequencesQza} \
+			--o-database ${params.resultsDir}/importDb/blastIndexedDb.qza
+			
+			qiime feature-classifier classify-consensus-blast \
+			--i-query ${params.resultsDir}/derepSeq/rep-seqs.qza  \
+			--i-blastdb ${params.resultsDir}/importDb/blastIndexedDb.qza \
+			--i-reference-taxonomy ${params.resultsDir}/importDb/${params.dbTaxonomyQza} \
+			--p-num-threads ${task.cpus} \
+			--p-perc-identity ${params.minIdentity} \
+			--p-query-cov ${params.minQueryCoverage} \
+			--p-maxaccepts ${params.maxAccepts} \
+			--p-min-consensus ${params.minConsensus} \
+			--o-classification ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+			--o-search-results ${params.resultsDir}/assignTaxonomy/search_results.qza
 		elif [ "\$classifier_uc" == "VSEARCH" ]; then
-  			qiime feature-classifier classify-consensus-vsearch \
-    		--i-query ${params.resultsDir}/derepSeq/rep-seqs.qza  \
-    		--i-reference-reads ${params.resultsDir}/importDb/${params.dbSequencesQza} \
-    		--i-reference-taxonomy ${params.resultsDir}/importDb/${params.dbTaxonomyQza} \
-    		--p-perc-identity ${params.minIdentity} \
-    		--p-query-cov ${params.minQueryCoverage} \
-    		--p-maxaccepts 100 \
-    		--p-maxrejects 100 \
-    		--p-maxhits ${params.maxAccepts} \
-    		--p-strand 'both' \
-    		--p-unassignable-label 'Unassigned' \
-    		--p-threads ${task.cpus} \
-    		--o-classification ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-    		--o-search-results ${params.resultsDir}/assignTaxonomy/search_results.qza
-    	else
-    		echo "Classifier ${params.classifier} is not supported (choose between Blast and Vsearch)"
-    	fi
+			qiime feature-classifier classify-consensus-vsearch \
+			--i-query ${params.resultsDir}/derepSeq/rep-seqs.qza  \
+			--i-reference-reads ${params.resultsDir}/importDb/${params.dbSequencesQza} \
+			--i-reference-taxonomy ${params.resultsDir}/importDb/${params.dbTaxonomyQza} \
+			--p-perc-identity ${params.minIdentity} \
+			--p-query-cov ${params.minQueryCoverage} \
+			--p-maxaccepts 100 \
+			--p-maxrejects 100 \
+			--p-maxhits ${params.maxAccepts} \
+			--p-min-consensus ${params.minConsensus} \
+			--p-strand 'both' \
+			--p-unassignable-label 'Unassigned' \
+			--p-threads ${task.cpus} \
+			--o-classification ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+			--o-search-results ${params.resultsDir}/assignTaxonomy/search_results.qza
+		else
+			echo "Classifier ${params.classifier} is not supported (choose between Blast and Vsearch)"
+		fi
 
-    	qiime metadata tabulate \
+	qiime metadata tabulate \
 		--m-input-file ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
 		--o-visualization ${params.resultsDir}/assignTaxonomy/taxonomy.qzv
 
 		qiime taxa filter-table \
 		--i-table ${params.resultsDir}/derepSeq/table.qza \
-  		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  		--p-exclude Unassigned \
-  		--o-filtered-table ${params.resultsDir}/derepSeq/table-no-Unassigned.qza
+		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+		--p-exclude Unassigned \
+		--o-filtered-table ${params.resultsDir}/derepSeq/table-no-Unassigned.qza
 	"""
 	else
 	"""
@@ -331,48 +339,48 @@ process collapseTables {
 
 		num_levels=\$(echo \$(cat ${params.dbTaxonomyTsv} | head -n2 | tail -n1 | cut -f2 | grep -n -o \";\" | wc -l) + 1 | bc)
 
-  		for lev in \$( seq 1 \$num_levels); do
+		for lev in \$( seq 1 \$num_levels); do
 			qiime taxa collapse \
-  			--i-table ${params.resultsDir}/derepSeq/table.qza \
-  			--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  			--p-level \$lev \
-  			--o-collapsed-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza
+			--i-table ${params.resultsDir}/derepSeq/table.qza \
+			--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+			--p-level \$lev \
+			--o-collapsed-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza
 
 			qiime metadata tabulate  \
-  			--m-input-file ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza \
+			--m-input-file ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza \
 			--o-visualization ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qzv
 
-  			qiime tools export \
-  			--input-path ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza \
-  			--output-path ${params.resultsDir}/collapseTables/
+			qiime tools export \
+			--input-path ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza \
+			--output-path ${params.resultsDir}/collapseTables/
 
 			mv ${params.resultsDir}/collapseTables/feature-table.biom ${params.resultsDir}/collapseTables/feature-table-absfreq-level\$lev.biom
 
-  			biom convert \
-  			-i ${params.resultsDir}/collapseTables/feature-table-absfreq-level\$lev.biom \
-  			-o ${params.resultsDir}/collapseTables/feature-table-absfreq-level\$lev.tsv \
-  			--to-tsv \
-  			--table-type 'Taxon table'
+			biom convert \
+			-i ${params.resultsDir}/collapseTables/feature-table-absfreq-level\$lev.biom \
+			-o ${params.resultsDir}/collapseTables/feature-table-absfreq-level\$lev.tsv \
+			--to-tsv \
+			--table-type 'Taxon table'
 
-  			qiime feature-table relative-frequency \
-  			--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza \
-  			--o-relative-frequency-table ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qza
+			qiime feature-table relative-frequency \
+			--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level\$lev.qza \
+			--o-relative-frequency-table ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qza
 
-  			qiime metadata tabulate  \
-  			--m-input-file ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qza \
-  			--o-visualization ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qzv
+			qiime metadata tabulate  \
+			--m-input-file ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qza \
+			--o-visualization ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qzv
 
-  			qiime tools export \
-  			--input-path ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qza \
-  			--output-path ${params.resultsDir}/collapseTables/
+			qiime tools export \
+			--input-path ${params.resultsDir}/collapseTables/table-collapsed-relfreq-level\$lev.qza \
+			--output-path ${params.resultsDir}/collapseTables/
 
-  			mv ${params.resultsDir}/collapseTables/feature-table.biom ${params.resultsDir}/collapseTables/feature-table-relfreq-level\$lev.biom
+			mv ${params.resultsDir}/collapseTables/feature-table.biom ${params.resultsDir}/collapseTables/feature-table-relfreq-level\$lev.biom
 
 			biom convert \
-  			-i ${params.resultsDir}/collapseTables/feature-table-relfreq-level\$lev.biom \
-  			-o ${params.resultsDir}/collapseTables/feature-table-relfreq-level\$lev.tsv \
-  			--to-tsv \
-  			--table-type 'Taxon table'
+			-i ${params.resultsDir}/collapseTables/feature-table-relfreq-level\$lev.biom \
+			-o ${params.resultsDir}/collapseTables/feature-table-relfreq-level\$lev.tsv \
+			--to-tsv \
+			--table-type 'Taxon table'
 		done
 	"""
 	else
@@ -405,48 +413,48 @@ process filterTaxa {
 
 		num_levels=\$(echo \$(cat ${params.dbTaxonomyTsv} | head -n2 | tail -n1 | cut -f2 | grep -n -o \";\" | wc -l) + 1 | bc)
 
-  		for lev in \$( seq 1 \$num_levels); do
+		for lev in \$( seq 1 \$num_levels); do
 			qiime taxa collapse \
-  			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}.qza \
-  			--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  			--p-level \$lev \
-  			--o-collapsed-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza
+			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}.qza \
+			--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+			--p-level \$lev \
+			--o-collapsed-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza
 
 			qiime metadata tabulate \
-  			--m-input-file ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza \
+			--m-input-file ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza \
 			--o-visualization ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qzv
 
-  			qiime tools export \
-  			--input-path ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza \
-  			--output-path ${params.resultsDir}/filterTaxa/
+			qiime tools export \
+			--input-path ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza \
+			--output-path ${params.resultsDir}/filterTaxa/
 
 			mv ${params.resultsDir}/filterTaxa/feature-table.biom ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-absfreq-level\$lev.biom
 
-  			biom convert \
-  			-i ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-absfreq-level\$lev.biom \
-  			-o ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-absfreq-level\$lev.tsv \
-  			--to-tsv \
-  			--table-type 'Taxon table'
+			biom convert \
+			-i ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-absfreq-level\$lev.biom \
+			-o ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-absfreq-level\$lev.tsv \
+			--to-tsv \
+			--table-type 'Taxon table'
 
-  			qiime feature-table relative-frequency \
-  			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza \
-  			--o-relative-frequency-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qza
+			qiime feature-table relative-frequency \
+			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level\$lev.qza \
+			--o-relative-frequency-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qza
 
-  			qiime metadata tabulate \
-  			--m-input-file ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qza \
-  			--o-visualization ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qzv
+			qiime metadata tabulate \
+			--m-input-file ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qza \
+			--o-visualization ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qzv
 
-  			qiime tools export \
-  			--input-path ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qza \
-  			--output-path ${params.resultsDir}/filterTaxa/
+			qiime tools export \
+			--input-path ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-relfreq-level\$lev.qza \
+			--output-path ${params.resultsDir}/filterTaxa/
 
-  			mv ${params.resultsDir}/filterTaxa/feature-table.biom ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-relfreq-level\$lev.biom
+			mv ${params.resultsDir}/filterTaxa/feature-table.biom ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-relfreq-level\$lev.biom
 
 			biom convert \
-  			-i ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-relfreq-level\$lev.biom \
-  			-o ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-relfreq-level\$lev.tsv \
-  			--to-tsv \
-  			--table-type 'Taxon table'
+			-i ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-relfreq-level\$lev.biom \
+			-o ${params.resultsDir}/filterTaxa/feature-table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-relfreq-level\$lev.tsv \
+			--to-tsv \
+			--table-type 'Taxon table'
 		done
 	"""
 	else
@@ -467,21 +475,21 @@ process taxonomyVisualization {
 
 		qiime taxa barplot \
 		--i-table ${params.resultsDir}/derepSeq/table.qza \
-  		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots.qzv
+		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots.qzv
 
 		qiime taxa barplot \
-  		--i-table ${params.resultsDir}/derepSeq/table-no-Unassigned.qza \
-  		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots-no-Unassigned.qzv
+		--i-table ${params.resultsDir}/derepSeq/table-no-Unassigned.qza \
+		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots-no-Unassigned.qzv
 
-  		qiime taxa barplot \
-  		--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}.qza \
-  		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}.qzv
+		qiime taxa barplot \
+		--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}.qza \
+		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}.qzv
 	"""
 	else if(params.taxonomyVisualization && !params.filterTaxa)
 	"""	
@@ -489,15 +497,15 @@ process taxonomyVisualization {
 
 		qiime taxa barplot \
 		--i-table ${params.resultsDir}/derepSeq/table.qza \
-  		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots.qzv
+		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots.qzv
 
 		qiime taxa barplot \
-  		--i-table ${params.resultsDir}/derepSeq/table-no-Unassigned.qza \
-  		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots-no-Unassigned.qzv
+		--i-table ${params.resultsDir}/derepSeq/table-no-Unassigned.qza \
+		--i-taxonomy ${params.resultsDir}/assignTaxonomy/taxonomy.qza \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/taxonomyVisualization/taxa-bar-plots-no-Unassigned.qzv
 	"""
 	else
 	"""
@@ -522,35 +530,35 @@ process diversityAnalyses {
 
 		if [ "\$num_samples" -gt 1 ]; then
 			qiime diversity core-metrics \
-  			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
-  			--p-sampling-depth ${params.numReadsDiversity} \
-  			--m-metadata-file ${params.sampleMetadata} \
-  			--o-rarefied-table ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
-  			--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
-  			--o-shannon-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
-  			--o-evenness-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
-  			--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
-  			--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
-  			--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
-  			--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
-  			--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
-  			--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv;
+			--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
+			--p-sampling-depth ${params.numReadsDiversity} \
+			--m-metadata-file ${params.sampleMetadata} \
+			--o-rarefied-table ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
+			--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
+			--o-shannon-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
+			--o-evenness-vector ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
+			--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
+			--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
+			--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
+			--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
+			--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
+			--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv;
 		fi
 
 		for f in \$(find ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity} | grep \"qza\" | grep -v \"distance-matrix\"); do
 
-  			fn=\$(echo \$f | sed \'s/\\.qza//\');
-  			
-  			qiime metadata tabulate \
-  			--m-input-file \$f \
-  			--o-visualization \$fn".qzv";
+			fn=\$(echo \$f | sed \'s/\\.qza//\');
+			
+			qiime metadata tabulate \
+			--m-input-file \$f \
+			--o-visualization \$fn".qzv";
 		done
 
 		qiime diversity alpha-rarefaction \
-  		--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
-  		--p-max-depth ${params.numReadsDiversity} \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/alpha-rarefaction.qzv
+		--i-table ${params.resultsDir}/filterTaxa/table-${params.taxaOfInterest}-min-freq-${params.minNumReadsTaxaOfInterest}-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
+		--p-max-depth ${params.numReadsDiversity} \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/diversityAnalyses/taxa-${params.taxaOfInterest}-samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/alpha-rarefaction.qzv
 	"""
 	else if(params.diversityAnalyses && !params.filterTaxa)
 	"""
@@ -561,35 +569,35 @@ process diversityAnalyses {
 
 		if [ "\$num_samples" -gt 1 ]; then
 			qiime diversity core-metrics \
-  			--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
-  			--p-sampling-depth ${params.numReadsDiversity} \
-  			--m-metadata-file ${params.sampleMetadata} \
-  			--o-rarefied-table ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
-  			--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
-  			--o-shannon-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
-  			--o-evenness-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
-  			--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
-  			--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
-  			--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
-  			--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
-  			--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
-  			--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv;
-  		fi
+			--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
+			--p-sampling-depth ${params.numReadsDiversity} \
+			--m-metadata-file ${params.sampleMetadata} \
+			--o-rarefied-table ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/rarefied-table.qza \
+			--o-observed-features-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/observed-features-vector.qza \
+			--o-shannon-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/shannon-vector.qza \
+			--o-evenness-vector ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/evenness-vector.qza \
+			--o-jaccard-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-distance-matrix.qza \
+			--o-bray-curtis-distance-matrix ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-distance-matrix.qza \
+			--o-jaccard-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-pcoa-results.qza \
+			--o-bray-curtis-pcoa-results ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-pcoa-results.qza \
+			--o-jaccard-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/jaccard-emperor.qzv \
+			--o-bray-curtis-emperor ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/bray-curtis-emperor.qzv;
+		fi
 
 		for f in \$(find ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity} | grep \"\\.qza\" | grep -v \"distance-matrix\"); do
-  			
-  			fn=\$(echo \$f | sed \'s/\\.qza//\');
-  			
-  			qiime metadata tabulate \
-  			--m-input-file \$f \
-  			--o-visualization \$fn".qzv";
+			
+			fn=\$(echo \$f | sed \'s/\\.qza//\');
+			
+			qiime metadata tabulate \
+			--m-input-file \$f \
+			--o-visualization \$fn".qzv";
 		done
 
 		qiime diversity alpha-rarefaction \
-  		--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
-  		--p-max-depth ${params.numReadsDiversity} \
-  		--m-metadata-file ${params.sampleMetadata} \
-  		--o-visualization ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/alpha-rarefaction.qzv
+		--i-table ${params.resultsDir}/collapseTables/table-collapsed-absfreq-level${params.taxaLevelDiversity}.qza \
+		--p-max-depth ${params.numReadsDiversity} \
+		--m-metadata-file ${params.sampleMetadata} \
+		--o-visualization ${params.resultsDir}/diversityAnalyses/samplingDepth-${params.numReadsDiversity}-level${params.taxaLevelDiversity}/alpha-rarefaction.qzv
 	"""
 	else
 	"""
