@@ -49,6 +49,7 @@ Other mandatory arguments which may be specified in the metontiime2.conf file
 --extraEndsTrim                                         Number of bases to be trimmed at both ends
 --clusteringIdentity                                    Identity for de novo clustering [0-1]
 --maxAccepts                                            Maximum number of candidate hits for each read, to be used for consensus taxonomy assignment
+--minConsensus                                          Minimum fraction of assignments must match top hit to be accepted as consensus assignment [0.5-1]
 --minQueryCoverage                                      Minimum query coverage for an alignment to be considered a candidate hit [0-1]
 --minIdentity                                           Minimum alignment identity for an alignment to be considered a candidate hit [0-1]
 --taxaLevelDiversity                                    Taxonomy level at which you want to perform non phylogeny-based diversity analyses
@@ -61,7 +62,7 @@ Other mandatory arguments which may be specified in the metontiime2.conf file
 ## Database
 
 MetONTIIME pipeline allows the users to choose the database according to the marker gene sequenced and to their preferences.
-Some [marker gene reference database](https://docs.qiime2.org/2023.5/data-resources/#taxonomy-classifiers-for-use-with-q2-feature-classifier), as [SILVA (16S/18S rRNA)](https://www.arb-silva.de/download/archive/qiime), [GreenGenes (16SrRNA)](http://ftp.microbio.me/greengenes_release/2022.10/) and [UNITE (fungal ITS)](https://doi.plutof.ut.ee/doi/10.15156/BIO/2483915) are already formatted for use with QIIME2, as they are available as a pair of sequences (fasta) and taxonomy (tsv) files, and they can therefore be easily imported as QIIME2 artifacts (qza).
+Some [marker gene reference database](https://docs.qiime2.org/2023.9/data-resources/#taxonomy-classifiers-for-use-with-q2-feature-classifier), as [SILVA (16S/18S rRNA)](https://www.arb-silva.de/download/archive/qiime), [GreenGenes (16SrRNA)](http://ftp.microbio.me/greengenes_release/2022.10/) and [UNITE (fungal ITS)](https://doi.plutof.ut.ee/doi/10.15156/BIO/2483915) are already formatted for use with QIIME2, as they are available as a pair of sequences (fasta) and taxonomy (tsv) files, and they can therefore be easily imported as QIIME2 artifacts (qza).
 In case you downloaded a fasta file from NCBI and you want to obtain the corresponding taxonomy tsv file, you can use **TaxonomyTsv_from_fastaNCBI.R** script. This R script requires an R installation with [taxize](http://cran.nexr.com/web/packages/taxize/vignettes/taxize_vignette.html) and [Biostrings](https://bioconductor.org/packages/release/bioc/html/Biostrings.html) packages installed.
 For example, if you want to use the same database used by the EPI2ME 16S workflow for bacterial 16S gene, you can go to [BioProject 33175](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D), click _send to_, select _Complete Record_ and _File_, set the _Format_ to _FASTA_ and then click _Create File_; the corresponding taxonomyTsv file can then be created with:
 
