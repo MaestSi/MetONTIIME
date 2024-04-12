@@ -25,7 +25,7 @@ chmod 755 *
 
 ## Usage
 
-The MetONTIIME pipeline requires you to open metontiime2.conf configuration file and set the desired options. Then, you can run the pipeline using either docker or singularity environments just specifying a value for the -profile variable.
+The MetONTIIME pipeline requires you to open nextflow.config configuration file and set the desired options. Then, you can run the pipeline using either docker or singularity environments just specifying a value for the -profile variable.
 
 ```
 Usage:
