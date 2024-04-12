@@ -29,11 +29,11 @@ The MetONTIIME pipeline requires you to open metontiime2.conf configuration file
 
 ```
 Usage:
-nextflow -c metontiime2.conf run metontiime2.nf --workDir="/path/to/workDir" --resultsDir="/path/to/resultsDir" -profile docker
+nextflow -c nextflow.config run main.nf --workDir="/path/to/workDir" --resultsDir="/path/to/resultsDir" -profile docker
 
 Mandatory argument:
 -profile                                                 Configuration profile to use. Available: docker, singularity
-Other mandatory arguments which may be specified in the metontiime2.conf file
+Other mandatory arguments which may be specified in the nextflow.config file
 
 --workDir                                               Path to working directory including fastq.gz files
 --sampleMetadata                                        Path to sample metadata tsv file; if it doesn't exist yet, it is created at runtime
