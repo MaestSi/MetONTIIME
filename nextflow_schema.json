@@ -1,0 +1,198 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/MaestSi/MetONTIIME/master/nextflow_schema.json",
+  "title": "MaestSi/MetONTIIME pipeline parameters",
+  "description": "A Meta-barcoding pipeline for analysing ONT data in QIIME2 framework",
+  "type": "object",
+  "definitions": {
+    "generic_options": {
+      "title": "Generic options",
+      "type": "object",
+      "fa_icon": "fas fa-file-import",
+      "description": "Less common options for the pipeline, typically set in a config file.",
+      "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+      "properties": {
+        "help": {
+          "type": "boolean",
+          "description": "Display help text.",
+          "fa_icon": "fas fa-question-circle",
+          "hidden": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/generic_options"
+    }
+  ],
+  "properties": {
+    "workDir": {
+      "type": "string",
+      "default": "/path/to/workDir",
+      "description": "Path to working directory including fastq.gz files"
+    },
+    "sampleMetadata": {
+      "type": "string",
+      "default": "/path/to/sample-metadata.tsv",
+      "description": "Path to sample metadata tsv file; if it doesn't exist yet, it is created at runtime"
+    },
+    "dbSequencesFasta": {
+      "type": "string",
+      "default": "/path/to/sequence.fasta",
+      "description": "Path to database file with sequences in fasta format"
+    },
+    "dbTaxonomyTsv": {
+      "type": "string",
+      "default": "/path/to/taxonomy.tsv",
+      "description": "Path to database file with sequence id-to-taxonomy correspondence in tsv format"
+    },
+    "dbSequencesQza": {
+      "type": "string",
+      "default": "db_sequences.qza",
+      "description": "Name of database file with sequences as QIIME2 artifact (qza); if it is already available, it should be put in resultsDir/importDb"
+    },
+    "dbTaxonomyQza": {
+      "type": "string",
+      "default": "db_taxonomy.qza",
+      "description": "Name of database file with sequence id-to-taxonomy correspondence as QIIME2 artifact (qza); if it is already available, it should be put in resultsDir/importDb"
+    },
+    "classifier": {
+      "type": "string",
+      "default": "Vsearch",
+      "description": "Taxonomy classifier, available: VSEARCH, Blast"
+    },
+    "maxNumReads": {
+      "type": "integer",
+      "default": 50000,
+      "description": "maxNumReads is the maximum number of reads per sample; if one sample has more than maxNumReads, random downsampling is performed"
+    },
+    "minReadLength": {
+      "type": "integer",
+      "default": 200,
+      "description": "minReadLength is the minimum length (bp) for a read to be retained"
+    },
+    "maxReadLength": {
+      "type": "integer",
+      "default": 5000,
+      "description": "maxReadLength is the maximum length (bp) for a read to be retained"
+    },
+    "minQual": {
+      "type": "integer",
+      "default": 10,
+      "description": "minQual is the minimum average PHRED score for a read to be retained"
+    },
+    "extraEndsTrim": {
+      "type": "integer",
+      "default": 20,
+      "description": "Number of bases to be trimmed at both ends"
+    },
+    "clusteringIdentity": {
+      "type": "integer",
+      "default": 1,
+      "description": "Identity for de novo clustering [0-1]"
+    },
+    "maxAccepts": {
+      "type": "integer",
+      "default": 3,
+      "description": "Maximum number of candidate hits for each read, to be used for consensus taxonomy assignment"
+    },
+    "minConsensus": {
+      "type": "number",
+      "default": 0.7,
+      "description": "Minimum fraction of assignments must match top hit to be accepted as consensus assignment [0.5-1]"
+    },
+    "minQueryCoverage": {
+      "type": "number",
+      "default": 0.8,
+      "description": "Minimum query coverage for an alignment to be considered a candidate hit [0-1]"
+    },
+    "minIdentity": {
+      "type": "number",
+      "default": 0.9,
+      "description": "Minimum alignment identity for an alignment to be considered a candidate hit [0-1]"
+    },
+    "taxaLevelDiversity": {
+      "type": "integer",
+      "default": 6,
+      "description": "Taxonomy level at which you want to perform non-phylogeny-based diversity analyses"
+    },
+    "numReadsDiversity": {
+      "type": "integer",
+      "default": 500,
+      "description": "Max num. reads for diversity analyses"
+    },
+    "taxaOfInterest": {
+      "type": "string",
+      "description": "Taxa of interest that you want to retain and to focus the analysis on"
+    },
+    "minNumReadsTaxaOfInterest": {
+      "type": "integer",
+      "default": 1,
+      "description": "Minimum number of reads assigned to Taxa of interest to retain a sample"
+    },
+    "resultsDir": {
+      "type": "string",
+      "default": "/path/to/resultsDir",
+      "description": "Path to directory containing results"
+    },
+    "concatenateFastq": {
+      "type": "boolean",
+      "description": "Process that concatenates fastq files for each barcode; set to false in case you already have one fastq file for each barcode"
+    },
+    "filterFastq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that filters sequencing reads based on length and quality"
+    },
+    "downsampleFastq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that performs random downsampling of sequencing reads"
+    },
+    "importFastq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that imports fastq.gz files into QIIME2 framework"
+    },
+    "dataQC": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that checks the quality of sequencing reads"
+    },
+    "importDb": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that imports fasta and tsv database files as qza artifacts"
+    },
+    "derepSeq": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that performs de-novo clustering of sequencing reads (or dereplication if clusteringIdentity=1)"
+    },
+    "assignTaxonomy": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that assigns each representative sequence to a taxonomy"
+    },
+    "taxonomyVisualization": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that creates an interactive taxonomy barplot"
+    },
+    "collapseTables": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that collapses taxonomy tables at different taxonomic levels"
+    },
+    "filterTaxa": {
+      "type": "boolean",
+      "description": "Process that filters a taxa of interest for downstream analyses"
+    },
+    "diversityAnalyses": {
+      "type": "boolean",
+      "default": true,
+      "description": "Process that performs alpha- and beta-diversity analyses"
+    }
+  }
+}
