@@ -114,9 +114,9 @@ A demo dataset composed of 1000 reads named Zymo-GridION-EVEN-BB-SN_sup_pass_fil
 
 MetONTIIME is a [Nextflow](http://www.nature.com/nbt/journal/v35/n4/full/nbt.3820.html) pipeline based on [QIIME2](https://qiime2.org/).
 
-If this tool is useful for your work, please consider citing our [preprint](https://www.preprints.org/manuscript/202402.0662/v1).
+If this tool is useful for your work, please consider citing our [manuscript](https://www.mdpi.com/1467-3045/46/5/237).
 
-MATOUTE, A.; MAESTRI, S.; SAOUT, M.; LAGHOE, L.; SIMON, S.; BLANQUART, H.; Hernandez Martinez, M.A.; PIERRE DEMAR, M. Meat-Borne-Parasite: A Nanopore-Based Meta-Barcoding Workflow for Parasitic Microbiodiversity Assessment in the Wild Fauna of French Guiana. Preprints 2024, 2024020662. https://doi.org/10.20944/preprints202402.0662.v1 
+Matoute, A.; Maestri, S.; Saout, M.; Laghoe, L.; Simon, S.; Blanquart, H.; Hernandez Martinez, M.A.; Pierre Demar, M. Meat-Borne-Parasite: A Nanopore-Based Meta-Barcoding Work-Flow for Parasitic Microbiodiversity Assessment in the Wild Fauna of French Guiana. Curr. Issues Mol. Biol. 2024, 46, 3810-3821. https://doi.org/10.3390/cimb46050237
 
 Please, refer to the following manuscripts for further information.
 
