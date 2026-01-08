@@ -147,5 +147,6 @@ if (length(ind_fail) > 0) {
 
 seqnames_reduced <- unlist(lapply(strsplit(x = names(sequences), split = " "), '[[', 1))
 full_taxonomy_df <- data.frame(seqnames=seqnames_reduced, taxonomy=unname(full_taxonomy_final))
+full_taxonomy_df$taxonomy <- gsub(x = full_taxonomy_df$taxonomy, pattern = "^;", replacement = "")
 cat("Writing dbTaxonomyTsv to file\n")
 write.table(x = full_taxonomy_df, file = dbTaxonomyTsv, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE)
