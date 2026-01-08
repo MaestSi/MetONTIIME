@@ -69,7 +69,7 @@ For example, if you want to use the same database used by the EPI2ME 16S workflo
 ```
 Rscript /path/to/TaxonomyTsv_from_fastaNCBI.R \
 dbSequencesFasta="/path/to/input/dbSequences.fasta" \
-dbTaxonomyTsv="./path/to/output//dbTaxonomy.tsv" \
+dbTaxonomyTsv="/path/to/output//dbTaxonomy.tsv" \
 ENTREZ_KEY="myentrezkey"
 ```
 
